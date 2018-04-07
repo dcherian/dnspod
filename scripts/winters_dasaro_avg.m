@@ -212,12 +212,6 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
                  'k-', 'DisplayName', ['dTdz_i = ' num2str(Tzi, '%.1e')]);
         end
 
-        % fit z against T to get dz/dT
-        % [poly, ~, mu] = polyfit(Tfull, zfull, 1);
-        % zTi = poly(1);
-        % hline2 = plot(hsort, hsort.XLim, polyval(poly, hsort.XLim, [], mu), ...
-        %               'k-', 'DisplayName', ['1/(dz/dT) = ' num2str(1./zTi, '%.1e')]);
-
         if optional
             % isoscalar average zTj
             hline3 = plot(hsort, Tj, nanmean(zTj, 2), ...
@@ -265,22 +259,9 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
                            [1 1 1]*0.6);
         ylim(htp, robust_lim(Tp.tp(tpt0:tpt1)))
         uistack(htpfull, 'bottom')
-        axes(htp); datetick('x', 'MM:SS', 'keeplimits');
-
-        if ~chi_is_empty
-            semilogy(hchi, chi.time(chit0:chit1), chi.spec_area(chit0:chit1), ...
-                     'color', 'k', 'linewidth', 2, 'displayname', ['spec_area'])
-            legend(hchi, '-dynamiclegend')
-            plot(hchi, hchi.XLim, [1, 1]*chi.spec_floor * chi.nfft, 'k-', ...
-                 'displayname', 'noise floor');
-            plot(hchi, hchi.XLim, 2*[1, 1]*chi.spec_floor * chi.nfft, 'k--', ...
-                 'displayname', '2x noise floor');
-            axes(hchi); datetick('x', 'MM:SS', 'keeplimits');
-        end
 
         hleg = legend(hsort, '-dynamiclegend');
         hleg.Position = [0.7479    0.7733    0.1650    0.0800];
-        axes(hdisp); datetick('x', 'MM:SS', 'keeplimits');
         uistack(htemp2, 'bottom');
         if ~chi_is_empty
             linkaxes([hchi hdisp htp htemp2], 'x');

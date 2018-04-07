@@ -17,7 +17,7 @@ function [wda] = process_wda_estimate(chi, chi_wda)
     % to pre-process sorted gradient
     chi_is_empty = ~isfield(chi, 'chi');
 
-    ndt = round(chi_wda.dt(1) / diff(chi.time(1:2)*86400));
+    ndt = round(chi_wda.dt(1) / diff(chi.time(1:2)));
 
     if ~chi_is_empty
         wda.Jq = nan(1, length(chi_wda.tstart));
@@ -103,7 +103,7 @@ function [wda] = process_wda_estimate(chi, chi_wda)
                 chiavg = avg(1, :);
                 epsavg = avg(2, :);
 
-                Jqvec = -chiavg' ./ dTdz * 4200 * 1025 * 0.5;
+                Jqvec = -chiavg' ./ dTdz * 0.5;
                 Ktvec = chiavg' ./ dTdz.^2 * 0.5;
 
                 wda.chi(tt) = sum(dz .* chiavg', 'omitnan')./sum(dz, 'omitnan');
@@ -118,11 +118,12 @@ function [wda] = process_wda_estimate(chi, chi_wda)
     if ~chi_is_empty
         disp(['WDA: ' num2str(nnan) ' = ' num2str(nnan/length(wda.chi)*100) '% time intervals have chi=NaN. '])
         disp(['WDA: ' num2str(sum(wda.no_min_dz)) ' = ' num2str(sum(wda.no_min_dz)/length(wda.chi)*100) ...
-              '% time intervals did not see enough pumping to make an estimate. '])
+              '% time intervals did not see enough pumping to make an estimate. ']);
 
+    if isfield(chi, 'N2')
         wda.N2 = interp1(chi.time(~isnan(chi.time)), chi.N2(~isnan(chi.time)), wda.time);
-        wda.T = interp1(chi.time(~isnan(chi.time)), chi.T(~isnan(chi.time)), wda.time);
         wda.eps_Kt = wda.N2 .* wda.Kt/0.2;
         wda.eps_Kt(wda.N2 < 0) = nan;
     end
+    wda.T = interp1(chi.time(~isnan(chi.time)), chi.T(~isnan(chi.time)), wda.time);
 end

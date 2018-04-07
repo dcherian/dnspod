@@ -1,0 +1,12 @@
+* DNS-pod
+
+MATLAB code to sample DNS output from Kaminski & Smyth (2018) like a χpod.
+
+** Questions
+
+1. How well do we do at recovering the net change in background potential energy through irreversible mixing when sampling a fully resolved turbulence field like the χpod?
+2. How does agreement depend on sampling parameters viz. wave pumping amplitude / frequency?
+3. Does sorting and using the Winters & D'Asaro (1996) formulation get us closer to the true value than time averaging a la Osborn (1980)
+
+** Future
+1. Maybe we want to do vertical profiles like Chameleon / VMP.

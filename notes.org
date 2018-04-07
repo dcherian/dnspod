@@ -1,0 +1,14 @@
+NX, NZ = number of points
+LX, LZ = non-dimensional lengths
+
+Smyth, Moum & Caldwell have dimensional values
+
+h* = 1m - 25m = width of shear layer
+u* = 0.5 - 2m/s = Δu across shear layer
+t = h*/u*
+B* = N² × h* = 1e-3 × 10 = 1e-3 ≡ 1 kg/m³ density jump across
+
+sampling properties :
+Z = 1-2m; U = 0.2-0.5m/s (this should be related to ΔU); T = 5-25s
+
+CTD Δz = 10-20m

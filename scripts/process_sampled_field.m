@@ -20,9 +20,9 @@ function [sample, wda] = process_sampled_field(savedir)
     vdisp.time = sample.t';
 
     % T observations, here buoyancy b
-    T.time = sample.t;
-    T.Tenh = sample.b;
-    T.T = sample.b;
+    T.time = sample.t';
+    T.Tenh = sample.b';
+    T.T = sample.b';
 
     % Set tp to chi
     Tp.tp = sample.chi';
@@ -40,7 +40,7 @@ function [sample, wda] = process_sampled_field(savedir)
         idx = idx+1;
     end
 
-    chi_wda = merge_cell_structs(avgs, 1);
+    chi_wda = merge_cell_structs(avgs, 2);
     chi_wda.dt = dt;
 
     wda = process_wda_estimate(chi, chi_wda);

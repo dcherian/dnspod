@@ -28,7 +28,7 @@ function [merged] = merge_cell_structs(in, concat_2d)
                 end
             end
 
-            if concat_2d & ismatrix(mat(1).(F{f}))
+            if concat_2d & all(size(mat(1).(F{f})) > 1)
                 concat_dim = concat_2d;
             end
 

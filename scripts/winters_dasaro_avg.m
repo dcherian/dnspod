@@ -27,7 +27,7 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
     chit0 = find_approx(chi.time, vdisp.time(t0));
     chit1 = find_approx(chi.time, vdisp.time(t1));
 
-    zfull = -(vdisp.dis_z(t0:t1)-nanmean(vdisp.dis_z(t0:t1))); % t0 element can be nan?
+    zfull = -(vdisp.dis_z(t0:t1)); % t0 element can be nan?
     Tfull = T.Tenh(t0:t1);
     Tchi = chi.T(chit0:chit1);
 
@@ -115,8 +115,6 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
         Tvec = T.Tenh(l0:l1); %T.T(l0:l1);
 
         if all(isnan(Tvec)), continue; end
-
-        if any(Tp.tp(l0:l1) > 15), continue; end
 
         % interpolate to uniform depths before sorting
         Tinterp = interp1(zvec, Tvec, zthorpe);
@@ -208,9 +206,9 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
 
         if plotflag
             hline = plot(hsort, polyval(poly, hsort.YLim, [], mu), hsort.YLim, ...
-                         'k-', 'DisplayName', ['dTdz_i = ' num2str(Tzi, '%.1e')]);
+                         'k-', 'DisplayName', ['dTdz_i = ' num2str(wda.Tzi, '%.1e')]);
             plot(htemp, polyval(poly, hsort.YLim, [], mu), htemp.YLim, ...
-                 'k-', 'DisplayName', ['dTdz_i = ' num2str(Tzi, '%.1e')]);
+                 'k-', 'DisplayName', ['dTdz_i = ' num2str(wda.Tzi, '%.1e')]);
         end
 
         if optional
@@ -231,8 +229,7 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
                           ['mean(chi.dTdz) = ' num2str(mean(chi.dTdz(chit0:chit1)), '%.1e')]);
         end
 
-        hzfull = plot(hdisp, vdisp.time(t0:t1), ...
-                      -(vdisp.dis_z(t0:t1) - vdisp.dis_z(t0)), ...
+        hzfull = plot(hdisp, vdisp.time(t0:t1), -(vdisp.dis_z(t0:t1)), ...
                       'color', [1 1 1]*0.75, 'linewidth', 2);
         if ~chi_is_empty
             hcfull = plot(hchi, chi.time(chit0:chit1), ...

@@ -188,6 +188,10 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
     wda.dTdz_bins(1:length(Tbins)-1, 1) = 1./dzdT;
     wda.dz(1:length(Tbins)-1, 1) = dz;
 
+    % fit T against z to get dT/dz == internal gradient
+    [poly, ~, mu] = polyfit(zfull(~isnan(Tfull)), Tfull(~isnan(Tfull)), 1);
+    wda.Tzi = poly(1)/mu(2); % undo MATLAB scaling
+
     if plotflag
         if ~chi_is_empty
             wda.dt = dt;
@@ -202,9 +206,6 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
                           ' | Jq = ' num2str(wda_proc.Jq)])
         end
 
-        % fit T against z to get dT/dz == internal gradient
-        [poly, ~, mu] = polyfit(zfull(~isnan(Tfull)), Tfull(~isnan(Tfull)), 1);
-        Tzi = poly(1)/mu(2); % undo MATLAB scaling
         if plotflag
             hline = plot(hsort, polyval(poly, hsort.YLim, [], mu), hsort.YLim, ...
                          'k-', 'DisplayName', ['dTdz_i = ' num2str(Tzi, '%.1e')]);

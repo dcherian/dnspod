@@ -1,3 +1,4 @@
+* Parameter choices
 NX, NZ = number of points
 LX, LZ = non-dimensional lengths
 
@@ -8,7 +9,17 @@ u* = 0.5 - 2m/s = Δu across shear layer
 t = h*/u*
 B* = N² × h* = 1e-3 × 10 = 1e-3 ≡ 1 kg/m³ density jump across
 
-sampling properties :
+sampling properties:
 Z = 1-2m; U = 0.2-0.5m/s (this should be related to ΔU); T = 5-25s
 
 CTD Δz = 10-20m
+
+* Next steps
+1. Need to compare inferred Jq against ΔBPE in /volume sampled by χpod/
+   - I should be able to integrate the ~means.b~ field between z-limits of trajectory to get BPE and look at time-evolution of that?
+   - but I don't think I can sort that :( .
+
+2. Do non-dimensionalization more carefully
+   - Could remove re-dimensionalization from ~sample_along_trajectory~
+   - Fix non-dimensionalization of ε, χ in ~process_sampled_field.~
+   -

@@ -1,7 +1,7 @@
-function [] = process_sample(savedir)
+function [sample, wda] = process_sampled_field(savedir)
 
     nbins = 7; % number of isoscalar surfaces to average between
-    dt = 60; % (s) length of time chunk over which to average
+    dt = 30; % (s) length of time chunk over which to average
 
     load([savedir '/merged.mat'])
 
@@ -15,28 +15,35 @@ function [] = process_sample(savedir)
     chi.T = moving_average(sample.b, window, window);
     chi.time = moving_average(sample.t, window, window);
 
-    t0 = sample.t(1);
-    t1 = t0 + dt;
-
-    it0 = find_approx(sample.t, t0);
-    it1 = find_approx(sample.t, t1);
-
     % vertical displacement structure
     vdisp.dis_z = sample.traj.z';
-    vdisp.time = sample.t;
+    vdisp.time = sample.t';
 
     % T observations, here buoyancy b
     T.time = sample.t;
-    T.Tenh = sample.b';
+    T.Tenh = sample.b;
     T.T = sample.b;
 
     % Set tp to chi
-    Tp.tp = sample.chi;
-    Tp.time = sample.t;
+    Tp.tp = sample.chi';
+    Tp.time = sample.t';
 
-    plotflag = 1;
+    ndt = round(dt./nanmedian(diff(sample.t)));
 
-    wda = winters_dasaro_avg(it0, it1, vdisp, chi, T, Tp, dt, plotflag);
+    plotflag = 0; % set 1 to debug
+    idx = 1;
+    avgs = {};
+    for t0=1:ndt:length(sample.t)
+        avgs{idx} = winters_dasaro_avg(t0, min(t0+ndt, length(sample.t)), ...
+                                       vdisp, chi, T, Tp, dt, plotflag);
+
+        idx = idx+1;
+    end
+
+    chi_wda = merge_cell_structs(avgs, 1);
+    chi_wda.dt = dt;
+
+    wda = process_wda_estimate(chi, chi_wda);
 
 end
 

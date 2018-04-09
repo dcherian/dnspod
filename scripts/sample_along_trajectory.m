@@ -9,7 +9,7 @@ function [sample] = sample_along_trajectory(file, layer, samp, savename)
     dim.LZ = file.sim_info.LZ * layer.width/2;
 
     % build trajectory
-    traj.t = dim.t(1):0.01:dim.t(end); % sample at 100Hz
+    traj.t = dim.t; %dim.t(1):0.01:dim.t(end); % sample at 100Hz
     traj.z = samp.pump_z * sin(2*pi/samp.pump_period * traj.t);
 
     uback = samp.uback - layer.vjmp/2 * tanh(traj.z/(layer.width/2));

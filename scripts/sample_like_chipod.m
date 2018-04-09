@@ -6,7 +6,7 @@ mkdir(savedir); % for along-trajectory samples
 mkdir([simdir '/bg']); % for background info
 
 % simulation info from first and last file
-fnames = dir([simdir '/*.mat']);
+fnames = dir([simdir '/slices*.mat']);
 first = load([simdir '/' fnames(1).name]);
 
 % dimensional parameters
@@ -26,6 +26,9 @@ samp.pump_z = 2; % (m) pumping vertical amplitude
 samp.pump_period = 5; % (s) pumping frequency
 samp.uback = 0.25; % (m/s) background flow that advects
                    % the shear layer past the chipod
+samp.t0 = first.coords.t(1); % save start of trajectory so that I can be
+                             % at the right x-position when processing
+                             % files in parallel
 
 % last = load([simdir '/' fnames(2).name], 'sim_info', 'coords');
 

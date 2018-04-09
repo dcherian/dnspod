@@ -5,15 +5,16 @@ function [sample] = sample_along_trajectory(file, layer, samp, savename)
     dim.x = file.coords.x * layer.width/2;
     dim.z = file.coords.z * layer.width/2;
     dim.t = file.coords.t * layer.timescale;
+    dim.t0 = samp.t0 * layer.timescale;
     dim.LX = file.sim_info.LX * layer.width/2;
     dim.LZ = file.sim_info.LZ * layer.width/2;
 
     % build trajectory
     traj.t = dim.t; %dim.t(1):0.01:dim.t(end); % sample at 100Hz
-    traj.z = samp.pump_z * sin(2*pi/samp.pump_period * traj.t);
+    tvec = traj.t - dim.t0; % gets traj.x right when processing files in parallel.
 
-    uback = samp.uback - layer.vjmp/2 * tanh(traj.z/(layer.width/2));
-    traj.x = mod(cumtrapz(traj.t, uback), dim.LX);
+    traj.z = samp.pump_z * sin(2*pi/samp.pump_period * tvec);
+    traj.x = mod(samp.uback * tvec(1) + samp.uback * (tvec-tvec(1)), dim.LX);
     traj.x(abs(traj.x - dim.LX) < 1e-5) = dim.LX;
 
     % sample the file.slices along trajectory
@@ -25,6 +26,7 @@ function [sample] = sample_along_trajectory(file, layer, samp, savename)
     end
     sample.traj = traj;
     sample.t = traj.t;
+    sample.traj.tref = tvec;
 
     save(savename, 'sample');
 end

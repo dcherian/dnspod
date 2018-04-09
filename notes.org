@@ -22,4 +22,6 @@ CTD Δz = 10-20m
 2. Do non-dimensionalization more carefully
    - Could remove re-dimensionalization from ~sample_along_trajectory~
    - Fix non-dimensionalization of ε, χ in ~process_sampled_field.~
-   -
+
+3. Add some mooring gradient estimates
+   - sample b field at different depths at traj.x

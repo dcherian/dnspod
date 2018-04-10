@@ -77,8 +77,10 @@ sample.sim_info = first.sim_info;
 sample.coords = first.coords;
 save([savedir '/merged.mat'], 'sample')
 
-bg.bpe = merge_mat_files([simdir '/bg/'], 'bpe_*.mat');
-bg.means = merge_mat_files([simdir '/bg/'], 'means_*.mat', 1);
+bg.bpe = merge_mat_files([simdir '/bpe/'], 'bpe_*.mat', 0, 2);
+bg.bpe = bg.bpe.bpe;
+bp.bpe.binval= bg.bpe.binval(1:1000);
+bg.means = merge_mat_files([simdir '/bg/'], 'means_*.mat', 0, 2);
 bg.sim_info = first.sim_info;
 bg.coords = first.coords;
 save([simdir '/bg.mat'], 'bg')

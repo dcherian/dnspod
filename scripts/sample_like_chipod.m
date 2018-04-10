@@ -3,11 +3,11 @@ simdir = '../simulation_slices_Re1000Ri012Pr1/';
 savedir = [simdir '/samples/'];
 
 mkdir(savedir); % for along-trajectory samples
-mkdir([simdir '/bg']); % for background info
+mkdir([simdir '/means']); % for mean fields
 
 % simulation info from first and last file
 fnames = dir([simdir '/slices*.mat']);
-first = load([simdir '/' fnames(1).name]);
+first = load([simdir '/' fnames(1).name], 'coords', 'sim_info');
 
 % dimensional parameters
 layer.nu = 8e-4;
@@ -59,15 +59,22 @@ sample.samp = samp;
 sample.layer = layer;
 sample.sim_info = first.sim_info;
 sample.coords = first.coords;
+assert(all(diff(sample.time) > 0))
 save([savedir '/merged.mat'], 'sample')
 
-bg.bpe = merge_mat_files([simdir '/bpe/'], 'bpe_*.mat', 0, 2);
-bg.bpe = bg.bpe.bpe;
-bp.bpe.binval= bg.bpe.binval(1:1000);
-bg.means = merge_mat_files([simdir '/bg/'], 'means_*.mat', 0, 2);
-bg.sim_info = first.sim_info;
-bg.coords = first.coords;
-save([simdir '/bg.mat'], 'bg')
+bpe = merge_mat_files([simdir '/bpe/'], 'bpe_*.mat', 0, 2);
+bpe = bpe.bpe;
+assert(all(diff(bpe.time) > 0))
+bpe.binval= bg.bpe.binval(1:1000);
+bpe.sim_info = first.sim_info;
+bpe.coords = first.coords;
+save([simdir '/bpe.mat'], 'bpe')
+
+means = merge_mat_files([simdir '/means/'], 'means_*.mat', 0, 2);
+means.sim_info = first.sim_info;
+means.coords = first.coords;
+means.time = bpe.time;
+save([simdir '/means.mat'], 'means')
 
 disp('Finished merging files');
 toc(ticstart);

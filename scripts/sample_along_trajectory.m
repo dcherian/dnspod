@@ -1,4 +1,4 @@
-function [sample] = sample_along_trajectory(file, layer, samp, savename)
+function [sample] = sample_along_trajectory(file, layer, samp)
 
     % file.coords is non-dimensional
     % dim is dimensional
@@ -27,6 +27,5 @@ function [sample] = sample_along_trajectory(file, layer, samp, savename)
     sample.traj = traj;
     sample.t = traj.t;
     sample.traj.tref = tvec;
-
-    save(savename, 'sample');
+    sample.layer = layer;
 end

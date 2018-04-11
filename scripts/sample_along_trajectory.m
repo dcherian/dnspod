@@ -23,7 +23,30 @@ function [sample] = sample_along_trajectory(file, layer, samp)
         [xmat, zmat, tmat] = ndgrid(dim.x, dim.z, dim.t);
         F = griddedInterpolant(xmat, zmat, tmat, file.slices.(fields{fld}));
         sample.(fields{fld}) = F(traj.x, traj.z, traj.t);
+
+        % sample "mooring gradient" at traj.x
+        % do this for many separations
+        if fields{fld} == 'b'
+            NZ = file.sim_info.NZ - 1;
+
+            iz = 1;
+            for zz=3:3:(NZ/2)
+                zp = NZ/2 + 1 + zz;
+                zm = NZ/2 + 1 - zz;
+
+                sample.moor.dzm(iz, 1) = diff(file.coords.z([zm, zp]));
+                sample.moor.Tzm(iz, :) = ...
+                    diff(F(repmat(traj.x, [2, 1]), ...
+                           repmat(file.coords.z([zm, zp])', [1 length(traj.t)]), ...
+                           repmat(traj.t, [2, 1])), 1) / sample.moor.dzm(iz);
+
+                iz = iz+1;
+            end
+
+            sample.moor.t = traj.t;
+        end
     end
+
     sample.traj = traj;
     sample.t = traj.t;
     sample.traj.tref = tvec;

@@ -57,7 +57,7 @@ ticstart = tic;
 sample = merge_mat_files(savedir, '/sample*.mat', 0, 2);
 sample.samp = samp;
 sample.layer = layer;
-sample.moor.dzm = sample.moor.dzm(1:size(sample.moor.Tzm, 1));
+sample.moor.dzm = sample.moor.dzm(:, 1);
 sample.sim_info = first.sim_info;
 sample.coords = first.coords;
 assert(all(diff(sample.t) > 0))
@@ -94,7 +94,7 @@ hax = plot_estimate(wda);
 plot(hax(2), wda.time, wda.Tzi)
 
 %% compare gradients
-figure; hold on;
+CreateFigure; hold on;
 plot(sample.moor.t(1:50:end), sample.moor.Tzm(1:20, 1:50:end), ...
      '-', 'color', [1,1,1]*0.75, 'handlevisibility', 'off');
 plot(wda.time, wda.dTdz, 'r-', 'linewidth', 2, 'displayname', 'sorted');

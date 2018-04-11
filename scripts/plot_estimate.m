@@ -50,16 +50,6 @@ function [ax] = plot_estimate(chi, name, window, hfig, t0, t1)
     old_ylim = ylim;
     Tzavg = moving_average(chi.dTdz(tind), ww, ww);
     plot(time, Tzavg, 'displayname', name)
-    new_ylim = [0.98*min(Tzavg), 1.05*max(Tzavg)];
-    if all(isnan(new_ylim)), error('plot_estimate: dTdz All NaNs'); end
-    if diff(new_ylim) < 0  % for negative limits
-        new_ylim = fliplr(new_ylim);
-    end
-    if isequal(old_ylim, [0, 1])
-        ylim(new_ylim);
-    else
-        ylim([min([old_ylim, new_ylim]), max([old_ylim, new_ylim])])
-    end
     hold on;
     plot(xlim, [0, 0], 'k--');
     ylabel('dT/dz')
@@ -84,7 +74,6 @@ function [ax] = plot_estimate(chi, name, window, hfig, t0, t1)
     end
     ylabel('K_t')
     set(ax(4), 'yscale', 'log');
-    ylim([10.^[-7.5, 0]])
     grid on;
     Common()
 

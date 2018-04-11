@@ -97,8 +97,20 @@ plot(hax(2), wda.time, wda.Tzi)
 CreateFigure; hold on;
 plot(sample.moor.t(1:50:end), sample.moor.Tzm(1:20, 1:50:end), ...
      '-', 'color', [1,1,1]*0.75, 'handlevisibility', 'off');
-plot(wda.time, wda.dTdz, 'r-', 'linewidth', 2, 'displayname', 'sorted');
+plot(wda.time, wda.dTdz, 'r-', 'linewidth', 2, 'displayname', 'sorted \chipod');
 plot(wda.time, wda.Tzi, 'k-', 'linewidth', 2, 'displayname', 'internal');
+
+% this gives a characteristic shear layer thickness -
+% note h* is the shear layer half-width,
+% so initial thickness is 2 in nondimensional units
+I_th = trapz(means.coords.z, 1-(means.b).^2)/2;
+% this should give an overall stratification over the shear layer,
+% i.e. delta(B)/delta(z)~(2B0*)/(2h*)
+N_b = sqrt(1./I_th);
+plot(means.time, N_b, 'b-', 'displayname', 'Mean gradient across shear layer');
+plot(means.time([1, 9000]), [1, 1] * nanmean(wda.dTdz), 'r--', ...
+     'displayname', 'mean(sorted)')
+
 legend('-dynamiclegend');
 liney(0);
 title({'comparing sorted,internal gradient '; ...

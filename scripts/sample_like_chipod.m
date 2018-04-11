@@ -54,9 +54,10 @@ toc(ticstart);
 % merge 'means' properly and save that to simulation directory
 ticstart = tic;
 
-sample = merge_mat_files(savedir, '/sample*.mat');
+sample = merge_mat_files(savedir, '/sample*.mat', 0, 2);
 sample.samp = samp;
 sample.layer = layer;
+sample.moor.dzm = sample.moor.dzm(1:size(sample.moor.Tzm, 1));
 sample.sim_info = first.sim_info;
 sample.coords = first.coords;
 assert(all(diff(sample.t) > 0))
@@ -88,7 +89,23 @@ disp('Finished merging files');
 toc(ticstart);
 
 %% Process WDA estimate
-[sample, wda] = process_sampled_field(savedir);
+[sample, wda] = process_sampled_field(savedir, 90);
+hax = plot_estimate(wda);
+plot(hax(2), wda.time, wda.Tzi)
+
+%% compare gradients
+figure; hold on;
+plot(sample.moor.t(1:50:end), sample.moor.Tzm(1:20, 1:50:end), ...
+     '-', 'color', [1,1,1]*0.75, 'handlevisibility', 'off');
+plot(wda.time, wda.dTdz, 'r-', 'linewidth', 2, 'displayname', 'sorted');
+plot(wda.time, wda.Tzi, 'k-', 'linewidth', 2, 'displayname', 'internal');
+legend('-dynamiclegend');
+liney(0);
+title({'comparing sorted,internal gradient '; ...
+       'against range of "mooring gradients."'});
+ylabel('db/dz'); xlabel('time')
+
+export_fig('images/compare-dbdz.png')
 
 % pcolorcen(slices.eps(:,:,1)');
 % hold on;

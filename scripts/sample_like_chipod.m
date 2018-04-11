@@ -30,23 +30,7 @@ samp.t0 = first.coords.t(1); % save start of trajectory so that I can be
                              % at the right x-position when processing
                              % files in parallel
 
-% last = load([simdir '/' fnames(2).name], 'sim_info', 'coords');
-
-% test plot
-% figure;
-% subplot(2,1,1);
-% pcolorcen(dim.x, dim.z, slices.eps(:,:,1)');
-% hold on;
-% plot(traj.x, traj.z, 'w')
-% subplot(2,1,2);
-% pcolorcen(dim.x, dim.z, slices.eps(:,:,end)');
-% hold on;
-% plot(traj.x, traj.z, 'w')
-
-% plot3(traj.x, traj.z, traj.t);
-% xlabel('x'); ylabel('z'); zlabel('t')
-
-% (parallel) loop through files and sample along trajectory
+%% (parallel) loop through files and sample along trajectory
 failed = [];
 ticstart = tic;
 parfor(ff=1:length(fnames), 4)
@@ -95,3 +79,30 @@ toc(ticstart);
 % hold on;
 % scatter(traj.x, traj.z, 64, sample, 'filled', 'markeredgecolor', 'w')
 % sample = sample_along_trajectory(slices, traj)
+
+%% check trajectory wrapping
+tt = 500;
+hdl = plot(sample.traj.x(tt-199:tt), sample.traj.z(tt-199:tt));
+xlim([0 (sample.sim_info.LX * layer.width/2)])
+for tt = tt:length(sample.traj.t)
+   hdl.XData = sample.traj.x(tt-400:tt);
+   hdl.YData = sample.traj.z(tt-400:tt);
+   pause(0.1);
+end
+
+%% debugging stuff
+% last = load([simdir '/' fnames(2).name], 'sim_info', 'coords');
+
+% test plot
+% figure;
+% subplot(2,1,1);
+% pcolorcen(dim.x, dim.z, slices.eps(:,:,1)');
+% hold on;
+% plot(traj.x, traj.z, 'w')
+% subplot(2,1,2);
+% pcolorcen(dim.x, dim.z, slices.eps(:,:,end)');
+% hold on;
+% plot(traj.x, traj.z, 'w')
+
+% plot3(traj.x, traj.z, traj.t);
+% xlabel('x'); ylabel('z'); zlabel('t')

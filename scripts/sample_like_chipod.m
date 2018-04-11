@@ -64,8 +64,16 @@ save([savedir '/merged.mat'], 'sample')
 
 bpe = merge_mat_files([simdir '/bpe/'], 'bpe_*.mat', 0, 2);
 bpe = bpe.bpe;
+bpe.binval= bg.bpe.binval(1:1000); % time-invariant
+% make sure time is monotonic
 assert(all(diff(bpe.time) > 0))
-bpe.binval= bg.bpe.binval(1:1000);
+% make sure I can recover bpe.bpe
+for tt=1:size(bpe.Z, 2)
+    bpenew(tt) = -bpe.sim_info.Ri * ...
+        trapz(bpe.Z(:,tt), bpe.binval .* bpe.Z(:,tt), 1) ...
+        / trapz(diff(bpe.Z(:, tt)));
+end
+assert(all((bpenew - bpe.bpe) < 1e-5))
 bpe.sim_info = first.sim_info;
 bpe.coords = first.coords;
 save([simdir '/bpe.mat'], 'bpe')

@@ -59,12 +59,14 @@ sample.samp = samp;
 sample.layer = layer;
 sample.sim_info = first.sim_info;
 sample.coords = first.coords;
-assert(all(diff(sample.time) > 0))
+assert(all(diff(sample.t) > 0))
 save([savedir '/merged.mat'], 'sample')
 
 bpe = merge_mat_files([simdir '/bpe/'], 'bpe_*.mat', 0, 2);
 bpe = bpe.bpe;
-bpe.binval= bg.bpe.binval(1:1000); % time-invariant
+bpe.binval= bpe.binval(1:1000); % time-invariant
+bpe.sim_info = first.sim_info;
+bpe.coords = first.coords;
 % make sure time is monotonic
 assert(all(diff(bpe.time) > 0))
 % make sure I can recover bpe.bpe
@@ -74,8 +76,6 @@ for tt=1:size(bpe.Z, 2)
         / trapz(diff(bpe.Z(:, tt)));
 end
 assert(all((bpenew - bpe.bpe) < 1e-5))
-bpe.sim_info = first.sim_info;
-bpe.coords = first.coords;
 save([simdir '/bpe.mat'], 'bpe')
 
 means = merge_mat_files([simdir '/means/'], 'means_*.mat', 0, 2);

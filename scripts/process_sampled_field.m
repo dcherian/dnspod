@@ -1,22 +1,23 @@
-function [sample, wda] = process_sampled_field(savedir)
+function [sample, wda] = process_sampled_field(savedir, dt)
 
-    nbins = 7; % number of isoscalar surfaces to average between
-    dt = 30; % (s) length of time chunk over which to average
+    % dt = 60; % (s) length of time chunk over which to average
 
     load([savedir '/merged.mat'])
 
     % decimate χ, eps to "1 second".
     % TODO: I am averaging here; should I sample?
-    window = round(1/nanmedian(diff(sample.t)));
-    if window < 3, disp('1 second windows are < 3 points long.'); end
+    window = round(1/nanmedian(diff(sample.t * sample.layer.timescale)));
+    if window < 3
+        disp(['1 second windows are ' num2str(window) ' points long!']);
+    end
 
     chi.chi = moving_average(sample.chi, window, window);
-    chi.eps = moving_average(sample.eps, window, window);
+    chi.eps = 1./sample.sim_info.Re * moving_average(sample.eps, window, window);
     chi.T = moving_average(sample.b, window, window);
     chi.time = moving_average(sample.t, window, window);
 
     % vertical displacement structure
-    vdisp.dis_z = sample.traj.z';
+    vdisp.dis_z = -sample.traj.z';
     vdisp.time = sample.t';
 
     % T observations, here buoyancy b
@@ -28,7 +29,7 @@ function [sample, wda] = process_sampled_field(savedir)
     Tp.tp = sample.chi';
     Tp.time = sample.t';
 
-    ndt = round(dt./nanmedian(diff(sample.t)));
+    ndt = round(dt./nanmedian(diff(sample.t * sample.layer.timescale)));
 
     plotflag = 0; % set 1 to debug
     idx = 1;
@@ -44,7 +45,7 @@ function [sample, wda] = process_sampled_field(savedir)
     chi_wda.dt = dt;
 
     wda = process_wda_estimate(chi, chi_wda);
-
+    wda.Tzi = chi_wda.Tzi;
 end
 
 % % choose buoyancy (isoscalar) surfaces

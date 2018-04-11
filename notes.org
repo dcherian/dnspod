@@ -13,15 +13,18 @@ sampling properties:
 Z = 1-2m; U = 0.2-0.5m/s (this should be related to ΔU); T = 5-25s
 
 CTD Δz = 10-20m
+* Next steps [2/5]
+1. [ ] What is the "true" value of heat flux to compare against?
+   1. Need to compare inferred Jq against ΔBPE in /volume sampled by χpod/. Or something like that?
+   2. I can use ~bpe.Z~ (this goes from 0 to 25 but ~coords.z~ goes from -12.5 to 12.5)
+   3. Maybe there is something useful in the "localized" APE literature.
 
-* Next steps
-1. Need to compare inferred Jq against ΔBPE in /volume sampled by χpod/
-   - I should be able to integrate the ~means.b~ field between z-limits of trajectory to get BPE and look at time-evolution of that?
-   - but I don't think I can sort that :( .
+2. [X] Do non-dimensionalization more carefully [2/2]
+   - [X] Could remove re-dimensionalization from ~sample_along_trajectory~
+   - [X] Fix non-dimensionalization of ε, χ in ~process_sampled_field~ and other WDA stuff.
 
-2. Do non-dimensionalization more carefully
-   - Could remove re-dimensionalization from ~sample_along_trajectory~
-   - Fix non-dimensionalization of ε, χ in ~process_sampled_field.~
+3. [X] Add some mooring gradient estimates
 
-3. Add some mooring gradient estimates
-   - sample b field at different depths at traj.x
+4. [ ] Make cool movie
+
+5. [ ] Compare sign of <w'b'> with dT/dz. This should tell me something about sign of heat flux?

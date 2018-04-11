@@ -22,10 +22,10 @@ layer.timescale = layer.width/layer.vjmp;
 layer
 
 % sampling parameters
-samp.pump_z = 2; % (m) pumping vertical amplitude
-samp.pump_period = 5; % (s) pumping frequency
-samp.uback = 0.25; % (m/s) background flow that advects
-                   % the shear layer past the chipod
+samp.pump_z = 0.75/(layer.width/2); % (m) pumping *vertical amplitude*
+samp.pump_period = 10/layer.timescale; % (s) pumping frequency
+samp.uback = 0.25/(layer.vjmp/2); % (m/s) background flow that advects
+                                  % the shear layer past the chipod
 samp.t0 = first.coords.t(1); % save start of trajectory so that I can be
                              % at the right x-position when processing
                              % files in parallel

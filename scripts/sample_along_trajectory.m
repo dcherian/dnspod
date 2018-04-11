@@ -2,12 +2,12 @@ function [sample] = sample_along_trajectory(file, layer, samp)
 
     % file.coords is non-dimensional
     % dim is dimensional
-    dim.x = file.coords.x * layer.width/2;
-    dim.z = file.coords.z * layer.width/2;
-    dim.t = file.coords.t * layer.timescale;
-    dim.t0 = samp.t0 * layer.timescale;
-    dim.LX = file.sim_info.LX * layer.width/2;
-    dim.LZ = file.sim_info.LZ * layer.width/2;
+    dim.x = file.coords.x;
+    dim.z = file.coords.z;
+    dim.t = file.coords.t;
+    dim.t0 = samp.t0;
+    dim.LX = file.sim_info.LX;
+    dim.LZ = file.sim_info.LZ;
 
     % build trajectory
     traj.t = dim.t; %dim.t(1):0.01:dim.t(end); % sample at 100Hz

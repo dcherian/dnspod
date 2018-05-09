@@ -119,10 +119,38 @@ ylabel('db/dz'); xlabel('time')
 
 export_fig('images/compare-dbdz.png')
 
+%% estimate mean <wb> over volume sampled by chipod
+
+iz0 = find_approx(means.coords.z, min(sample.traj.z));
+iz1 = find_approx(means.coords.z, max(sample.traj.z));
+
+% average (in z) of x,y-averaged wb
+wb = trapz(means.coords.z(iz0:iz1)', means.bw(iz0:iz1, :), 1)/ ...
+     diff(means.coords.z([iz1, iz0]));
+plot(means.time, wb); liney(mean(wb)); liney(0)
+
 % pcolorcen(slices.eps(:,:,1)');
 % hold on;
 % scatter(traj.x, traj.z, 64, sample, 'filled', 'markeredgecolor', 'w')
 % sample = sample_along_trajectory(slices, traj)
+
+
+%% process ΔBPE for trajectory
+% not sure how to do this in a consistent manner given overturns
+
+load([simdir '/bpe.mat'])
+load([savedir '/merged.mat'])
+
+bpenew = nan([1, size(bpe.Z, 2)]);
+for tt=1:length(bpenew)
+    zrange = [find_approx(bpe.Z(:, tt)-12.5, min(sample.traj.z)): ...
+              find_approx(bpe.Z(:, tt)-12.5, max(sample.traj.z))];
+
+    bpenew(tt) = -bpe.sim_info.Ri * ...
+        trapz(bpe.Z(zrange,tt), bpe.binval(zrange) .* bpe.Z(zrange,tt), 1) ...
+        / trapz(diff(bpe.Z(zrange, tt)));
+end
+plot(bpenew);
 
 %% check trajectory wrapping
 tt = 500;

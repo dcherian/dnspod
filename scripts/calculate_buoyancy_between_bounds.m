@@ -1,4 +1,5 @@
-load bpe_Re1Ri012Pr1_sk01_1;
+% load ../simulation_slices_Re1000Ri012Pr1/bpe/bpe_Re1Ri012Pr1_sk01_01.mat
+load ../simulation_slices_Re1000Ri012Pr1/bpe.mat
 
 b_total_domain=zeros(size(bpe.time));
 b_total_slice=zeros(size(bpe.time));

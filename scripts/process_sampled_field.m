@@ -8,12 +8,13 @@ function [sample, wda] = process_sampled_field(savedir, dt)
     % TODO: I am averaging here; should I sample?
     window = round(1/nanmedian(diff(sample.t * sample.layer.timescale)));
     if window < 3
-        disp(['1 second windows are ' num2str(window) ' points long!']);
+        disp(['1 second windows for chi, eps subsampling are ' ...
+              num2str(window) ' points long!']);
     end
 
     chi.chi = moving_average(sample.chi, window, window);
     chi.eps = 1./sample.sim_info.Re * moving_average(sample.eps, window, window);
-    chi.T = moving_average(sample.b, window, window);
+    chi.T = moving_average(-sample.b, window, window);
     chi.time = moving_average(sample.t, window, window);
 
     % vertical displacement structure
@@ -22,8 +23,8 @@ function [sample, wda] = process_sampled_field(savedir, dt)
 
     % T observations, here buoyancy b
     T.time = sample.t';
-    T.Tenh = sample.b';
-    T.T = sample.b';
+    T.Tenh = -sample.b';
+    T.T = -sample.b';
 
     % Set tp to chi
     Tp.tp = sample.chi';
@@ -61,7 +62,7 @@ end
 %     l0 = locs(ll); l1 = locs(ll+1);
 
 %     zvec = sample.traj.z(l0:l1);
-%     Tvec = sample.b(l0:l1);
+%     Tvec = -sample.b(l0:l1);
 
 %     % account for non-uniform Δz
 

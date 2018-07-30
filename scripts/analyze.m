@@ -13,9 +13,11 @@ export_fig images/buoyancy-budget.pdf
 
 %% sensitivity to wda.dt
 
-CreateFigure;
-ax(1) = subplot(211); hold on;
-ax(2) = subplot(212); hold on;
+hfig = CreateFigure;
+ax = packfig(2, 1)
+hold(ax(1), 'on')
+hold(ax(2), 'on')
+
 for tt = [30 ,60, 90, 120, 150, 180, 210, 240]
     [sample, wda] = process_sampled_field(savedir, tt);
 
@@ -35,8 +37,17 @@ ax(1).YLabel.String = '$$J_q^t$$';
 ax(1).YLabel.Interpreter = 'latex';
 ax(2).YLabel.String = '$$\frac{1}{Re Pr}\int J_q^t dt $$';
 ax(2).YLabel.Interpreter = 'latex';
-axes(ax(1)); beautify([10, 11, 12]+2)
-axes(ax(2)); beautify([10, 11, 12]+2)
 
+[iso, meanb, meanbslice, int_b0dz0dt] = ...
+        calc_buoyancy_budget(sample, wda, bpe, weights);
+hplt = plot(ax(2), bpe.time, meanb - meanb(1) + int_b0dz0dt, ...
+            'displayname', 'mean b (full) + $b_0 \; dz_0/dt$', ...
+            'color', 'k', 'linewidth', 2)
+legend(hplt, 'LHS(buoyancy budget)')
+
+axes(ax(1)); beautify([10, 11, 12]+2, 'Times')
+axes(ax(2)); beautify([10, 11, 12]+2, 'Times')
 resizeImageForPub('portrait')
-export_fig images/jq-wda-dt-sensitivity.png
+hfig.Position = [100 421 720 577];
+
+export_fig images/jq-wda-dt-sensitivity.pdf

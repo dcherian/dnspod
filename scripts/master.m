@@ -1,5 +1,4 @@
 simdir = '../simulation_slices_Re1000Ri012Pr1/';
-
 savedir = [simdir '/samples/'];
 
 mkdir(savedir); % for along-trajectory samples
@@ -161,60 +160,6 @@ for tt = tt:length(sample.traj.t)
    hdl.YData = sample.traj.z(tt-400:tt);
    pause(0.1);
 end
-
-%% attempt to calculate heat flux for mean isosurface
-% i.e. buoyancy budget for the volume bounded by upper boundary
-% and the mean buoyancy surface within the sampled volume.
-% This is *not* contaminated by overturns because we calculate mean buoyancy
-% in sorted space using the PDF.
-
-load ../simulation_slices_Re1000Ri012Pr1/bpe.mat
-load ../simulation_slices_Re1000Ri012Pr1/samples/merged.mat
-if ~exist('wda', 'var')
-    [sample, wda] = process_sampled_field(savedir, 90);
-end
-
-%%
-iso = mean(sample.b); %mean(sample.b .* sample.chi)./mean(sample.chi); % isosurface
-meanb = nan([1, size(bpe.Z, 2)]);
-idx = find_approx(bpe.binval, iso);
-zrange = idx:size(bpe.Z, 1);
-for tt=1:size(bpe.bpe, 2)
-    % zrange = [find_approx(bpe.Z(:, tt)-12.5, min(sample.traj.z)): ...
-    %           find_approx(bpe.Z(:, tt)-12.5, max(sample.traj.z))];
-
-    meanb(tt) = trapz(bpe.binval(zrange), ...
-                      bpe.binval(zrange) .* bpe.buoypdf(zrange, tt), 1) ...
-        / trapz(bpe.binval(zrange), bpe.buoypdf(zrange, tt));
-    meanbslice(tt) = trapz(bpe.binval(zrange), ...
-                           bpe.binval(zrange) .* bpe.buoypdfslice(zrange, tt), 1) ...
-        / trapz(bpe.binval(zrange), bpe.buoypdfslice(zrange, tt));;
-end
-
-sim_info = sample.sim_info;
-
-figure;
-subplot(311)
-plot(sample.t, sample.b)
-hold on
-plot(wda.time, wda.T)
-hl = liney(iso);
-hl.HandleVisibility = 'on';
-legend('\chi-pod sampled buoyancy', 'WDA mean buoyancy', 'isosurface for budget')
-
-subplot(312)
-plot(wda.time, 1/sim_info.Pr/sim_info.Re .* wda.Jq, ...
-     'displayname', 'heatflux')
-ylabel('heat flux')
-
-subplot(313)
-plot(bpe.time, meanb-meanb(1), 'displayname', 'mean b (full)')
-hold on;
-plot(bpe.time, meanbslice-meanbslice(1), 'displayname', 'mean b (slice)')
-plot(wda.time, 1/sim_info.Pr/sim_info.Re .* cumtrapz(wda.time, wda.Jq), ...
-     'displayname', '\int heatflux')
-legend('-dynamiclegend')
-title('(mean buoyancy) budget')
 
 %% debugging stuff
 % last = load([simdir '/' fnames(2).name], 'sim_info', 'coords');

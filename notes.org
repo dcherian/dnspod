@@ -1,3 +1,8 @@
+#+LATEX_CLASS: dcarticle
+#+TITLE: dns-pod notes
+#+AUTHOR: Deepak Cherian & Alexis Kaminski
+#+OPTIONS: toc:nil tags:nil
+
 * Parameter choices
 NX, NZ = number of points
 LX, LZ = non-dimensional lengths
@@ -13,6 +18,9 @@ sampling properties:
 Z = 1-2m; U = 0.2-0.5m/s (this should be related to ΔU); T = 5-25s
 
 CTD Δz = 10-20m
+* Output description
+1. Z is height of parcel for density in binval
+2. resorted goes from 0 to Z, z goes from -Z/2 to Z/2
 * Next steps [2/6]
 1. [ ] What is the "true" value of heat flux to compare against?
    1. Need to compare inferred Jq against ΔBPE in /volume sampled by χpod/. Or something like that?

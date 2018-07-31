@@ -15,6 +15,7 @@ layer.timescale = layer.width/layer.vjmp;
 layer
 
 % sampling parameters
+samp.name = '01'; % unique name for particular subsample
 samp.pump_z = 0.75/(layer.width/2); % (m) pumping *vertical amplitude*
 samp.pump_period = 10/layer.timescale; % (s) pumping frequency
 samp.uback = 0.25/(layer.vjmp/2); % (m/s) background flow that advects

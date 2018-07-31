@@ -13,7 +13,7 @@
 %    None
 function [] = process_output(simdir, layer, samp)
 
-    savedir = [simdir '/samples/'];
+    savedir = [simdir '/samples/' samp.name '/'];
 
     mkdir(savedir); % for along-trajectory samples
     mkdir([simdir '/means']); % for mean fields

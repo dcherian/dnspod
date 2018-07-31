@@ -1,5 +1,6 @@
-simdir = '../simulation_slices_Re1000Ri012Pr1/';
-savedir = [simdir '/samples/'];
+sampname = 'pod-01'
+simdir = '../slices/simulation_slices_Re1000Ri012Pr1/';
+savedir = [simdir '/samples/' sampname '/'];
 
 load([simdir '/bpe.mat'])
 load([savedir '/merged.mat'])

@@ -1,3 +1,6 @@
+%  [] = plot_buoyancy_budget(sample, wda, bpe, weights)
+% All arguments are passed to calc_buoyancy_budget
+
 function [] = plot_buoyancy_budget(sample, wda, bpe, weights)
 
     [iso, meanb, meanbslice, int_b0dz0dt] = ...

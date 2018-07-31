@@ -1,12 +1,56 @@
-* DNS-pod
+* dnspod (duncepod? dance-pod!)
 
 MATLAB code to sample DNS output from Kaminski & Smyth (2018) like a χpod.
 
 ** Questions
-
 1. How well do we do at recovering the net change in background potential energy through irreversible mixing when sampling a fully resolved turbulence field like the χpod?
 2. How does agreement depend on sampling parameters viz. wave pumping amplitude / frequency?
 3. Does sorting and using the Winters & D'Asaro (1996) formulation get us closer to the true value than time averaging a la Osborn (1980)
+** Code variables
+Useful output variables / terminology
+| ~layer~  | Shear layer parameters (dimensional)          |
+| ~samp~   | Non-dimensionalized sampling parameters       |
+|        | ~pump_z~ : pumping amplitude                    |
+|        | ~pump_period~ : pumping period                  |
+|        | ~uback~ : constant background flow              |
+| ~traj~   | Trajectory in non-dimensional space           |
+|        | used to sample ~griddedInterpolant~ output      |
+| ~sample~ | Sampled field                                 |
+| ~wda~    | Structure with inferred turbulent parameters. |
+** Code organization
+*** General
+| ~master~                | Example of processing simulation output                  |
+| ~process_output~        | Processes DNS output. Requires layer and samp structures |
+|                       | Also merges ~bpe~ and ~means~ to individual files.           |
+|                       | Calls ~sample_single_file~ in parfor loop.                 |
+| ~process_sampled_field~ | Actually does the Winters & D'Asaro estimate for a run.  |
+|                       | Requires directory and "chunk" length ~dt.~                |
+|                       | Calls ~winters_dasaro_avg~ for pre-processing and          |
+|                       | ~process_wda_estimate~ to get turbulence parameters.       |
 
-** Future
-1. Maybe we want to do vertical profiles like Chameleon / VMP.
+*** Processing
+**** Higher-level wrappers
+| ~sample_single_file~      | small wrapper so that parfor works :/    |
+|                         | calls ~sample_along_trajectory~            |
+| ~sample_along_trajectory~ | Actually does all the work.              |
+|                         | Constructs ~griddedInterpolant~, builds    |
+|                         | trajectory and samples.                  |
+
+**** Core processing
+This is more complicated/modular than it needs to be because I copied stuff over from ~chipod_gust/~ so that we are doing the same thing in both places.
+
+| ~process_wda_estimate~ | Given a χpod time-series with requisite stuff  |
+|                      | (bins etc.), estimate K_T and J_q^t.              |
+| ~winters_dasaro_avg~   | bins time-series + and gets all data necessary |
+|                      | to actually make the estimate                  |
+| ~isoscalar_average~    |                                                |
+| ~generate_wda_bins~    |                                                |
+| ~thorpeSort~           |                                                |
+*** Analysis
+| ~calc_buoyancy_budget~              | Estimate terms in buoyancy budget.             |
+| ~calculate_buoyancy_between_bounds~ | Estimate mean buoyancy between two isosurfaces |
+| ~test_internal_wave_pumping~        | Attempt to account for internal wave           |
+|                                   | contamination. Abandoned.                      |
+*** Plotting
+| ~plot_buoyancy_budget~ | Plot terms in buoyancy budget.                     |
+| ~plot_estimate~        | Given ~wda~  structure, make plot of all quantities. |

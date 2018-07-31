@@ -16,7 +16,7 @@ function [merged] = merge_mat_files(savedir, globstr, make_2d, concat_dim_2d)
     if ~exist('make_2d', 'var'), make_2d = 0; end
     if ~exist('concat_dim_2d', 'var'), concat_dim_2d = 1; end
 
-    disp(['\n\n Merging files ... ' globstr])
+    disp(['Merging files ... ' globstr])
     samps = dir([savedir globstr]);
 
     array_merged = {};

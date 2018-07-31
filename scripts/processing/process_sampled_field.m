@@ -1,3 +1,14 @@
+% [sample, wda] = process_sampled_field(savedir, dt)
+% Input
+% -----
+%     savedir: directory with sample.mat
+%     dt : chunk length (wda.dt)
+%
+% Output
+% ------
+%     sample : the 'sample' structure
+%     wda : structure with inferred chi, KT etc.
+
 function [sample, wda] = process_sampled_field(savedir, dt)
 
     % dt = 60; % (s) length of time chunk over which to average

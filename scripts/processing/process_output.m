@@ -31,8 +31,9 @@ function [] = process_output(simdir, layer, samp)
     ticstart = tic;
     parfor(ff=1:length(fnames), 4)
         disp(['Processing file ' num2str(ff) '/' num2str(length(fnames))]);
+        idx = strfind(fnames(ff).name, '_');
+        filename = [simdir '/' fnames(ff).name(1:idx(end)) num2str(ff) '.mat']
         savename = [savedir '/sample_' num2str(ff, '%02d') '.mat'];
-        filename = [simdir '/' fnames(ff).name];
 
         try
             sample_single_file(filename, savename, simdir, ff, layer, samp);

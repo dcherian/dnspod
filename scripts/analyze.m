@@ -1,3 +1,5 @@
+addpath(genpath('./'))
+
 sampname = 'pod-01'
 simdir = '../slices/simulation_slices_Re1000Ri012Pr1/';
 savedir = [simdir '/samples/' sampname '/'];
@@ -5,12 +7,23 @@ savedir = [simdir '/samples/' sampname '/'];
 load([simdir '/bpe.mat'])
 load([savedir '/merged.mat'])
 
+sim_info = sample.sim_info;
+
 %% attempt to calculate heat flux budget for mean isosurface
 
 [sample, wda] = process_sampled_field(savedir, 90);
-plot_buoyancy_budget(sample, wda, bpe, 'sample')
+plot_buoyancy_budget(sample, wda, bpe, 'Jq')
 
 export_fig images/buoyancy-budget.pdf
+
+%% subsample Jmat at iso-surface level
+
+mask = ~isnan(wda.Tcen(:));
+J = scatteredInterpolant([wda.tmat(mask), wda.Tcen(mask)], wda.Jmat(mask));
+figure; plot(wda.time, 1/1000 * ...
+             cumtrapz(wda.time, J(wda.time, 0.01*ones(size(wda.time)))))
+
+
 
 %% sensitivity to wda.dt
 

@@ -12,6 +12,7 @@ function [iso, meanb, meanbslice, int_b0dz0dt] = ...
         iso = nanmean(sample.b)
     end
 
+    % calculate mean b bounded by isosurface 'iso' and the top boundary
     meanb = nan([1, size(bpe.Z, 2)]);
     idx = find_approx(bpe.binval, iso);
     zrange = idx:size(bpe.Z, 1);
@@ -30,6 +31,7 @@ function [iso, meanb, meanbslice, int_b0dz0dt] = ...
     % find time-varying z* location of isosurface in sorted space using the
     % buoyancy PDF.
     z0 = bpe.Z(idx, :);
+
     dt = diff(bpe.time);
     b0dz0dt = iso .* diff(z0)./diff(bpe.time);
     int_b0dz0dt = [0, cumtrapz(avg1(bpe.time), b0dz0dt)];

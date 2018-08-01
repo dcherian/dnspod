@@ -15,7 +15,7 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
     optional = 0;
 
     MIN_DIS_Z = 0.05; % minimum length (in metres) of a single up- or down-cast
-    nquantiles = round(8/60 * dt); % effectively number of bins
+    nquantiles = round(10/60 * dt); % effectively number of bins
 
     chi_is_empty = ~isfield(chi, 'chi');
 
@@ -119,7 +119,7 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
         % interpolate to uniform depths before sorting
         Tinterp = interp1(zvec, Tvec, zthorpe);
 
-        if sum((~isnan(Tinterp))) < 5, continue; end
+        % if sum((~isnan(Tinterp))) < 5, continue; end
 
         % Tsort is on depth grid zthorpe
         Tsort = thorpeSort(Tinterp);
@@ -179,7 +179,7 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
     dz = nanmean(dzmat, 2)';
     numgood = sum(~isnan(dzmat), 2);
     % make sure the isotherm is present in at least three profiles
-    dz(numgood < 3) = NaN;
+    % dz(numgood < 3) = NaN;
     dzdT = dz./dT;
 
     wda.Tbins(1:length(Tbins), 1) = Tbins;
@@ -280,6 +280,7 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
         %                     ' | Jq_{i} = ' num2str(Jqi, '%.1f') ...
         %                     ' | Jq_{m} = ' num2str(Jqm, '%.1f')];
     end
+    keyboard
 end
 
 function [data] = jitter(data, magnitude)

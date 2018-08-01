@@ -29,7 +29,7 @@ function [] = process_output(simdir, layer, samp)
     %% (parallel) loop through files and sample along trajectory
     failed = [];
     ticstart = tic;
-    parfor(ff=1:length(fnames), 4)
+    parfor(ff=1:length(fnames), 3)
         disp(['Processing file ' num2str(ff) '/' num2str(length(fnames))]);
         idx = strfind(fnames(ff).name, '_');
         filename = [simdir '/' fnames(ff).name(1:idx(end)) num2str(ff) '.mat']
@@ -43,8 +43,14 @@ function [] = process_output(simdir, layer, samp)
         end
     end
     disp('Finished processing files.')
-    disp('Failed = ')
-    disp(failed)
+
+    if failed
+        % bail here because later merging won't make sense.
+        disp('Failed = ')
+        disp(failed)
+        return;
+    end
+
     toc(ticstart);
 
     %% once sampled, combine and save to savedir/merged.mat

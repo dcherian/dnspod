@@ -110,6 +110,10 @@ function [wda] = process_wda_estimate(chi, chi_wda)
                 wda.eps(tt) = sum(dz .* epsavg', 'omitnan')./sum(dz, 'omitnan');
                 wda.Jq(tt) = sum(dz .* Jqvec, 'omitnan')./sum(dz, 'omitnan');
                 wda.Kt(tt) = sum(dz .* Ktvec, 'omitnan')./sum(dz, 'omitnan');
+
+                Tcen = (Tbins(1:end-1) + Tbins(2:end))/2; % T at bin center
+                wda.T_Jq(tt) = sum(Tcen .* dz .* abs(Jqvec), 'omitnan')...
+                    ./ sum(dz .* abs(Jqvec), 'omitnan');
             end
         end
     end

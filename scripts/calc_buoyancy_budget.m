@@ -6,21 +6,11 @@
 function [iso, meanb, meanbslice, int_b0dz0dt] = ...
     calc_buoyancy_budget(sample, wda, bpe, weights)
 
-    wda.Jq = repnan(wda.Jq, 0);
-
     if strcmp(weights,  'Jq')
-        buoy = wda.T;
-        weights = wda.Jq;
-        time = wda.time;
+        iso = nanmean(-wda.T_Jq)
     else
-        buoy = sample.b;
-        weights = ones(size(sample.b));
-        time = sample.t;
+        iso = nanmean(sample.b)
     end
-
-    dt = diff(time); dt = [dt(1), dt];
-    weights = abs(weights)/sum(abs(weights) .* dt);
-    iso = sum(buoy .* weights .* dt)  % isosurface
 
     meanb = nan([1, size(bpe.Z, 2)]);
     idx = find_approx(bpe.binval, iso);

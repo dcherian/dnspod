@@ -1,4 +1,6 @@
-* dnspod (duncepod? dance-pod!)
+* dnspod: direct diagnosis of diapycnal mixing from direct numerical simulations
+
+Can limited observations recover irreversible turbulent fluxes? A test case using DNS output.
 
 MATLAB code to sample DNS output from Kaminski & Smyth (2018) like a χpod.
 

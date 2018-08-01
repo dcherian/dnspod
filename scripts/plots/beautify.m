@@ -77,11 +77,11 @@ function [] = beautify(fontSizes, font_name)
         'FontName'   , font_name);
 
     % Line Width 2
-    set(findobj('Type','line'),'LineWidth',1)
-    try
-         set(findobj('Tag', 'dcline'), 'LineWidth',1);
-     catch ME
-    end
+    % set(findobj('Type','line'),'LineWidth',2)
+    % try
+    %      set(findobj('Tag', 'dcline'), 'LineWidth',1);
+    % catch ME
+    % end
 
     try
         set(findobj('Type', 'text'), 'FontName', font_name)

@@ -24,6 +24,9 @@ function [wda] = process_wda_estimate(chi, chi_wda)
         wda.Kt = nan(1, length(chi_wda.tstart));
         wda.eps = nan(1, length(chi_wda.tstart));
         wda.chi = nan(1, length(chi_wda.tstart));
+        wda.T_Jq = nan(1, length(chi_wda.tstart));
+        wda.Tcen = nan(size(chi_wda.Tbins) - [1, 0]);
+        wda.Jmat = nan(size(chi_wda.Tbins) - [1, 0]);
     end
 
     wda.dTdz = nan(1, length(chi_wda.tstart));
@@ -114,6 +117,10 @@ function [wda] = process_wda_estimate(chi, chi_wda)
                 Tcen = (Tbins(1:end-1) + Tbins(2:end))/2; % T at bin center
                 wda.T_Jq(tt) = sum(Tcen .* dz .* abs(Jqvec), 'omitnan')...
                     ./ sum(dz .* abs(Jqvec), 'omitnan');
+
+                wda.Jmat(1:length(Tcen), tt) = Jqvec;
+                wda.Tcen(1:length(Tcen), tt) = Tcen;
+
             end
         end
     end
@@ -129,5 +136,8 @@ function [wda] = process_wda_estimate(chi, chi_wda)
         wda.eps_Kt = wda.N2 .* wda.Kt/0.2;
         wda.eps_Kt(wda.N2 < 0) = nan;
     end
-    wda.T = interp1(chi.time(~isnan(chi.time)), chi.T(~isnan(chi.time)), wda.time);
+    wda.T = interp1(chi.time(~isnan(chi.time)), ...
+                    chi.T(~isnan(chi.time)), ...
+                    wda.time);
+    wda.tmat = repmat(wda.time, [size(wda.Tcen, 1), 1]);
 end

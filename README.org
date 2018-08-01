@@ -6,6 +6,16 @@ MATLAB code to sample DNS output from Kaminski & Smyth (2018) like a χpod.
 1. How well do we do at recovering the net change in background potential energy through irreversible mixing when sampling a fully resolved turbulence field like the χpod?
 2. How does agreement depend on sampling parameters viz. wave pumping amplitude / frequency?
 3. Does sorting and using the Winters & D'Asaro (1996) formulation get us closer to the true value than time averaging a la Osborn (1980)
+** Output Organization
+1. root directory : ~dnspod/~
+2. scripts : ~dnspod/scripts/~
+3. model output : ~dnspod/slices/simulation_name/~
+   1. ~bpe/~ , ~means/~: Individual ~.mat~ files for each model output file
+   2. ~bpe.mat~, ~means.mat~: Combined ~bpe~, ~means~ structures.
+4. Sampled output : ~dnspod/slices/simulation_name/samples/sample_name/~
+   1. ~sample_xx.mat~: one per output ~.mat~ file.
+   2. ~merged.mat~: combined ~sample_xx.mat~
+5. images : ~dnspod/images/~
 ** Code variables
 Useful output variables / terminology
 | ~layer~  | Shear layer parameters (dimensional)          |

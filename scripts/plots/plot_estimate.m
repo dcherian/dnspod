@@ -40,47 +40,54 @@ function [ax] = plot_estimate(chi, name, window, hfig, t0, t1)
     end
 
     set(hfig, 'currentaxes', ax(1))
-    semilogy(time, moving_average(chi.chi(tind), ww, ww), 'displayname', name)
+    hc = semilogy(time, moving_average(chi.chi(tind), ww, ww), ...
+                  'displayname', name)
     ylabel('\chi')
     set(ax(1), 'yscale', 'log');
     Common()
     grid on;
 
-    set(hfig, 'currentaxes', ax(2))
-    old_ylim = ylim;
-    Tzavg = moving_average(chi.dTdz(tind), ww, ww);
-    plot(time, Tzavg, 'displayname', name)
-    hold on;
-    plot(xlim, [0, 0], 'k--');
-    ylabel('dT/dz')
-    Common()
-    %symlog(gca, 'y', 5e-3);
+    if isfield(chi, 'dTdz')
+        set(hfig, 'currentaxes', ax(2))
+        old_ylim = ylim;
+        Tzavg = moving_average(chi.dTdz(tind), ww, ww);
+        plot(time, Tzavg, 'displayname', name, 'color', hc.Color)
+        hold on;
+        plot(xlim, [0, 0], 'k--');
+        ylabel('dT/dz')
+        Common()
+        %symlog(gca, 'y', 5e-3);
+    end
 
     set(hfig, 'currentaxes', ax(3))
     try
-        semilogy(time, moving_average(chi.eps(tind), ww, ww), 'displayname', name)
+        semilogy(time, moving_average(chi.eps(tind), ww, ww), ...
+                 'displayname', name, 'color', hc.Color)
     catch ME
-        semilogy(time, moving_average(chi.eps1(tind), ww, ww), 'displayname', name)
+        semilogy(time, moving_average(chi.eps1(tind), ww, ww), ...
+                 'displayname', name, 'color', hc.Color)
     end
     ylabel('\epsilon')
     set(ax(3), 'yscale', 'log');
     grid on;
     Common()
 
-    set(hfig, 'currentaxes', ax(4))
     if isfield(chi, 'Kt')
-        semilogy(time, moving_average(chi.Kt(tind), ww, ww), ...
-                 'displayname', name);
+        set(hfig, 'currentaxes', ax(4))
+        if isfield(chi, 'Kt')
+            semilogy(time, moving_average(chi.Kt(tind), ww, ww), ...
+                     'displayname', name, 'color', hc.Color);
+        end
+        ylabel('K_t')
+        set(ax(4), 'yscale', 'log');
+        grid on;
+        Common()
     end
-    ylabel('K_t')
-    set(ax(4), 'yscale', 'log');
-    grid on;
-    Common()
 
     set(hfig, 'currentaxes', ax(5))
     if isfield(chi, 'Jq')
-        plot(time, ...
-             moving_average(chi.Jq(tind), ww, ww), 'displayname', name)
+        plot(time, moving_average(chi.Jq(tind), ww, ww), ...
+             'displayname', name, 'color', hc.Color)
     end
     ylabel('J_q^t')
     Common()

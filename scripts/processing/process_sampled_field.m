@@ -24,7 +24,7 @@ function [sample, wda] = process_sampled_field(savedir, dt)
     end
 
     chi.chi = moving_average(sample.chi, window, window);
-    chi.eps = 1./sample.sim_info.Re * moving_average(sample.eps, window, window);
+    chi.eps = moving_average(sample.eps, window, window);
     chi.T = moving_average(sample.b, window, window);
     chi.time = moving_average(sample.t, window, window);
 

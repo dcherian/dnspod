@@ -3,14 +3,8 @@
 % The LHS is *not* contaminated by reversible wb because we calculate
 % mean buoyancy in sorted space using the PDF.
 
-function [iso, meanb, meanbslice, int_b0dz0dt] = ...
-    calc_buoyancy_budget(sample, wda, bpe, weights)
-
-    if strcmp(weights,  'Jq')
-        iso = nanmean(wda.T_Jq)
-    else
-        iso = nanmean(sample.b)
-    end
+function [meanb, meanbslice, int_b0dz0dt] = ...
+        calc_buoyancy_budget(sample, wda, bpe, iso)
 
     % calculate mean b bounded by isosurface 'iso' and the top boundary
     meanb = nan([1, size(bpe.Z, 2)]);

@@ -12,7 +12,7 @@ sim_info = sample.sim_info;
 %% attempt to calculate heat flux budget for mean isosurface
 
 [sample, wda] = process_sampled_field(savedir, 90);
-plot_buoyancy_budget(sample, wda, bpe, 'Jq')
+plot_buoyancy_budget(sample, wda, bpe, wda.T_Jq)
 
 export_fig images/buoyancy-budget.pdf
 
@@ -53,7 +53,7 @@ ax(2).YLabel.String = '$$\frac{1}{Re Pr}\int J_q^t dt $$';
 ax(2).YLabel.Interpreter = 'latex';
 
 [iso, meanb, meanbslice, int_b0dz0dt] = ...
-        calc_buoyancy_budget(sample, wda, bpe, 'Jq');
+        calc_buoyancy_budget(sample, wda, bpe, wda.T_Jq);
 hplt = plot(ax(2), bpe.time, meanb - meanb(1) + int_b0dz0dt, ...
             'displayname', 'mean b (full) + $b_0 \; dz_0/dt$', ...
             'color', 'k', 'linewidth', 2)

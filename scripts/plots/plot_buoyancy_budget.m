@@ -1,10 +1,10 @@
 %  [] = plot_buoyancy_budget(sample, wda, bpe, weights)
 % All arguments are passed to calc_buoyancy_budget
 
-function [] = plot_buoyancy_budget(sample, wda, bpe, weights)
+function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
 
-    [iso, meanb, meanbslice, int_b0dz0dt] = ...
-        calc_buoyancy_budget(sample, wda, bpe, weights);
+    [meanb, meanbslice, int_b0dz0dt] = ...
+        calc_buoyancy_budget(sample, wda, bpe, iso);
 
     sim_info = sample.sim_info;
 

@@ -280,7 +280,6 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
         %                     ' | Jq_{i} = ' num2str(Jqi, '%.1f') ...
         %                     ' | Jq_{m} = ' num2str(Jqm, '%.1f')];
     end
-    keyboard
 end
 
 function [data] = jitter(data, magnitude)

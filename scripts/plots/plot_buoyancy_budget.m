@@ -3,7 +3,7 @@
 
 function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
 
-    [meanb, meanbslice, int_b0dz0dt] = ...
+    [totalb, totalbslice, b0z0] = ...
         calc_buoyancy_budget(sample, wda, bpe, iso);
 
     sim_info = sample.sim_info;
@@ -31,10 +31,10 @@ function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
     ax(2).YLabel.Interpreter = 'latex';
 
     hold(ax(3), 'on')
-    plot(ax(3), bpe.time, meanb - meanb(1), 'displayname', 'mean b (full)')
-    plot(ax(3), bpe.time, meanb - meanb(1) + int_b0dz0dt, ...
-         'displayname', 'mean b (full) + $b_0 \; dz_0/dt$')
-    plot(ax(3), bpe.time, meanbslice - meanbslice(1), 'displayname', 'mean b (slice)')
+    plot(ax(3), bpe.time, totalb - totalb(1), 'displayname', 'mean b (full)')
+    plot(ax(3), bpe.time, totalb - totalb(1) + (b0z0 - b0z0(1)), ...
+         'displayname', 'mean b (full) + $b_0 \; z_0$')
+    plot(ax(3), bpe.time, totalbslice - totalbslice(1), 'displayname', 'mean b (slice)')
     plot(ax(3), wda.time, ...
          1/sim_info.Pr/sim_info.Re .* cumtrapz(wda.time, repnan(wda.Jq, 0)), ...
          'displayname', '$$\frac{1}{Re Pr} \int J_q^t \; dt$$')

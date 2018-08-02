@@ -3,23 +3,32 @@
 % The LHS is *not* contaminated by reversible wb because we calculate
 % mean buoyancy in sorted space using the PDF.
 
-function [meanb, meanbslice, int_b0dz0dt] = ...
+function [totalb, totalbslice, b0z0] = ...
         calc_buoyancy_budget(sample, wda, bpe, iso)
 
     % calculate mean b bounded by isosurface 'iso' and the top boundary
-    meanb = nan([1, size(bpe.Z, 2)]);
+    totalb = nan([1, size(bpe.Z, 2)]);
+    totalbslice = nan([1, size(bpe.Z, 2)]);
     idx = find_approx(bpe.binval, iso);
     zrange = idx:size(bpe.Z, 1);
     for tt=1:size(bpe.bpe, 2)
         % zrange = [find_approx(bpe.Z(:, tt)-12.5, min(sample.traj.z)): ...
         %           find_approx(bpe.Z(:, tt)-12.5, max(sample.traj.z))];
 
-        meanb(tt) = trapz(bpe.binval(zrange), ...
-                          bpe.binval(zrange) .* bpe.buoypdf(zrange, tt), 1) ...
-            / trapz(bpe.binval(zrange), bpe.buoypdf(zrange, tt));
-        meanbslice(tt) = trapz(bpe.binval(zrange), ...
-                               bpe.binval(zrange) .* bpe.buoypdfslice(zrange, tt), 1) ...
-            / trapz(bpe.binval(zrange), bpe.buoypdfslice(zrange, tt));;
+        totalb(tt) = trapz(bpe.binval(zrange), ...
+                           bpe.binval(zrange) .* bpe.buoypdf(zrange, tt), 1);
+        totalbslice(tt) = trapz(bpe.binval(zrange), ...
+                                bpe.binval(zrange) ...
+                                .* bpe.buoypdfslice(zrange, tt), 1);
+
+
+        % meanb(tt) = trapz(bpe.binval(zrange), ...
+        %                   bpe.binval(zrange) .* bpe.buoypdf(zrange, tt), 1) ...
+        %     / trapz(bpe.binval(zrange), bpe.buoypdf(zrange, tt));
+        % meanbslice(tt) = trapz(bpe.binval(zrange), ...
+        %                        bpe.binval(zrange) .* bpe.buoypdfslice(zrange, tt), 1) ...
+        %     / trapz(bpe.binval(zrange), bpe.buoypdfslice(zrange, tt));;
+
     end
 
     % find time-varying z* location of isosurface in sorted space using the
@@ -27,7 +36,6 @@ function [meanb, meanbslice, int_b0dz0dt] = ...
     z0 = bpe.Z(idx, :);
 
     dt = diff(bpe.time);
-    b0dz0dt = iso .* diff(z0)./diff(bpe.time);
-    int_b0dz0dt = [0, cumtrapz(avg1(bpe.time), b0dz0dt)];
+    b0z0 = iso .* z0;
 
     return

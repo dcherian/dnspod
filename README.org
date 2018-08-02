@@ -1,8 +1,8 @@
 * dnspod: direct diagnosis of diapycnal mixing from direct numerical simulations
 
-Can limited observations recover irreversible turbulent fluxes? A test case using DNS output.
+Can limited observations recover irreversible turbulent fluxes? A test case using DNS.
 
-MATLAB code to sample DNS output from Kaminski & Smyth (2018) like a χpod.
+xref: Kaminski & Smyth (2018), JFM
 
 ** Questions
 1. How well do we do at recovering the net change in background potential energy through irreversible mixing when sampling a fully resolved turbulence field like the χpod?

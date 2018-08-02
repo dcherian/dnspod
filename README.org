@@ -64,5 +64,6 @@ This is more complicated/modular than it needs to be because I copied stuff over
 | ~test_internal_wave_pumping~        | Attempt to account for internal wave           |
 |                                   | contamination. Abandoned.                      |
 *** Plotting
-| ~plot_buoyancy_budget~ | Plot terms in buoyancy budget.                     |
-| ~plot_estimate~        | Given ~wda~  structure, make plot of all quantities. |
+| ~plot_buoyancy_budget~ | Plot terms in buoyancy budget.                |
+| ~plot_estimate~        | Given ~wda~ or ~sample~  structure, make plot |
+|                        | of all quantities.                            |

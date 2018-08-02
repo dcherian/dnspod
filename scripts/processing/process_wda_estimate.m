@@ -101,7 +101,8 @@ function [wda] = process_wda_estimate(chi, chi_wda)
             wda.dzdT(tt) = 1./(sum(dz .* 1./dTdz, 'omitnan')./sum(dz, 'omitnan'));
 
             if ~chi_is_empty
-                avg = isoscalar_average([chi.chi(chit0:chit1); chi.eps(chit0:chit1)], ...
+                avg = isoscalar_average([chi.chi(chit0:chit1); ...
+                                    chi.eps(chit0:chit1)], ...
                                         Tchi, Tbins);
                 chiavg = avg(1, :);
                 epsavg = avg(2, :);
@@ -132,7 +133,9 @@ function [wda] = process_wda_estimate(chi, chi_wda)
               '% time intervals did not see enough pumping to make an estimate. ']);
 
     if isfield(chi, 'N2')
-        wda.N2 = interp1(chi.time(~isnan(chi.time)), chi.N2(~isnan(chi.time)), wda.time);
+        wda.N2 = interp1(chi.time(~isnan(chi.time)), ...
+                         chi.N2(~isnan(chi.time)), ...
+                         wda.time);
         wda.eps_Kt = wda.N2 .* wda.Kt/0.2;
         wda.eps_Kt(wda.N2 < 0) = nan;
     end

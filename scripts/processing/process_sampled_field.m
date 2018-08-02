@@ -25,7 +25,7 @@ function [sample, wda] = process_sampled_field(savedir, dt)
 
     chi.chi = moving_average(sample.chi, window, window);
     chi.eps = 1./sample.sim_info.Re * moving_average(sample.eps, window, window);
-    chi.T = moving_average(-sample.b, window, window);
+    chi.T = moving_average(sample.b, window, window);
     chi.time = moving_average(sample.t, window, window);
 
     % vertical displacement structure
@@ -34,8 +34,8 @@ function [sample, wda] = process_sampled_field(savedir, dt)
 
     % T observations, here buoyancy b
     T.time = sample.t';
-    T.Tenh = -sample.b';
-    T.T = -sample.b';
+    T.Tenh = sample.b';
+    T.T = sample.b';
 
     % Set tp to chi
     Tp.tp = sample.chi';

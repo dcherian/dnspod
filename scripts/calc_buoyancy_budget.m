@@ -7,7 +7,7 @@ function [iso, meanb, meanbslice, int_b0dz0dt] = ...
     calc_buoyancy_budget(sample, wda, bpe, weights)
 
     if strcmp(weights,  'Jq')
-        iso = nanmean(-wda.T_Jq)
+        iso = nanmean(wda.T_Jq)
     else
         iso = nanmean(sample.b)
     end

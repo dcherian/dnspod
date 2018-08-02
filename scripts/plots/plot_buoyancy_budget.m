@@ -12,8 +12,8 @@ function [] = plot_buoyancy_budget(sample, wda, bpe, weights)
     ax = packfig(3, 1)
     plot(ax(1), sample.t, sample.b)
     hold(ax(1), 'on')
-    hl = plot(ax(1), wda.time, -wda.T, 'linewidth', 2)
-    hl2 = plot(ax(1), wda.time, -wda.T_Jq, 'k', 'linewidth', 2)
+    hl = plot(ax(1), wda.time, wda.T, 'linewidth', 2)
+    hl2 = plot(ax(1), wda.time, wda.T_Jq, 'k', 'linewidth', 2)
     plot(ax(1), [sample.t(1), sample.t(end)], [1, 1]*iso, ...
          '-', 'color', [1, 1, 1]*0.5)
     hl1 = legend(ax(1), '$\chi$-pod sampled buoyancy', ...

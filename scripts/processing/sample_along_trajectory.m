@@ -49,6 +49,7 @@ function [sample] = sample_along_trajectory(file, layer, samp)
 
     sample.traj = traj;
     sample.t = traj.t;
+    sample.time = sample.t;
     sample.traj.tref = tvec;
     sample.layer = layer;
 end

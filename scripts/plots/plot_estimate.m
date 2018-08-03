@@ -13,7 +13,13 @@
 
 function [ax] = plot_estimate(chi, name, window, hfig, t0, t1)
 
-    if ~exist('name', 'var'), name = 'chi'; end
+    if ~exist('name', 'var')
+        if isfield(chi, 'name')
+            name = chi.name;
+        else
+            name = 'chi';
+        end
+    end
     if ~exist('window', 'var'), window = 0; end
     if ~exist('t0', 'var') | isempty(t0), t0 = nanmin(chi.time); end
     if ~exist('t1', 'var') | isempty(t1), t1 = nanmax(chi.time); end

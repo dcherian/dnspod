@@ -20,19 +20,26 @@ xref: Kaminski & Smyth (2018), JFM
 5. images : ~dnspod/images/~
 ** Code variables
 Useful output variables / terminology
-| ~layer~  | Shear layer parameters (dimensional)          |
-| ~samp~   | Non-dimensionalized sampling parameters       |
-|        | ~pump_z~ : pumping amplitude                    |
-|        | ~pump_period~ : pumping period                  |
-|        | ~uback~ : constant background flow              |
-| ~traj~   | Trajectory in non-dimensional space           |
-|        | used to sample ~griddedInterpolant~ output      |
-| ~sample~ | Sampled field                                 |
-| ~wda~    | Structure with inferred turbulent parameters. |
+| ~layer~  | Shear layer parameters (dimensional)                           |
+| ~samp~   | Non-dimensionalized sampling parameters                        |
+|          | ~pump_z~ : pumping amplitude                                   |
+|          | ~pump_period~ : pumping period                                 |
+|          | ~uback~ : constant background flow                             |
+| ~traj~   | Trajectory in non-dimensional space                            |
+|          | used to sample ~griddedInterpolant~ output                     |
+| ~sample~ | Sampled field                                                  |
+| ~wda~    | Structure with inferred turbulent parameters.                  |
+|          | ~Tbins~ : bin edges (bins, time)                               |
+|          | ~Tcen~ : center of bins                                        |
+|          | ~Jq, Kt, eps, chi~ : turbulent parameters (time)               |
+|          | ~T_Jq~ : ~mean(Tcen * Jq)~ : ~J_q~ weighted mean temp.         |
+|          | ~Jmat~ : 2D Jq matrix (Tcen, time)                             |
+|          | ~tmat~ : time matrix to go with ~Jmat~ (Tcen, time)            |
+|          | ~no_min_dz~ : 1 if there was not enough pumping, else 0 (time) |
 ** Code organization
 *** General
 | ~master~                | Example of processing simulation output                  |
-| ~process_output~        | Processes DNS output. Requires layer and samp structures |
+| ~process_output~        | Processes DNS output. Requires ~layer~ and ~samp~ structures |
 |                       | Also merges ~bpe~ and ~means~ to individual files.           |
 |                       | Calls ~sample_single_file~ in parfor loop.                 |
 | ~process_sampled_field~ | Actually does the Winters & D'Asaro estimate for a run.  |

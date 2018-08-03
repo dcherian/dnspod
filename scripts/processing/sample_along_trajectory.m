@@ -1,7 +1,6 @@
 function [sample] = sample_along_trajectory(file, layer, samp)
 
     % file.coords is non-dimensional
-    % dim is dimensional
     dim.x = file.coords.x;
     dim.z = file.coords.z;
     dim.t = file.coords.t;

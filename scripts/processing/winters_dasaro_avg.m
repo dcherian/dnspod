@@ -10,11 +10,11 @@
 %           tstart, tstop - start,end of time chunk
 %
 
-function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag, bpe)
+function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag, ...
+                                    bpe, debug)
 
     optional = 0;
 
-    debug = 0; % if 1, makes plots and stops after making inference for this chunk
     plotflag = debug;
 
     MIN_DIS_Z = 0.05; % minimum length (in metres) of a single up- or down-cast
@@ -193,9 +193,10 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag, bpe
 
     % reconstructing sorted profile is not really a good idea.
     % because of NaNs in the middle, better to compare dz
+    wda.zsort = nan(size(wda.Tbins));
     dz(isnan(dz)) = 0;
     zprof = [0, cumsum(dz)];
-    wda.zsort = zprof';
+    wda.zsort(1:length(Tbins)) = zprof';
 
     % save "true" sorted profile
     lo = find_approx(bpe.binval, Tbins(1));
@@ -240,7 +241,8 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag, bpe
                       'displayname', ['average \Delta z mean=' ...
                             num2str(nanmean(1./dzdT), '%.1e')]);
 
-        plot(hsort, bpe.binval(lo:hi), zsorted-zsorted(1) + min(zprof), ...
+        plot(hsort, bpe.binval(lo:hi), ...
+             zsorted(lo:hi)-zsorted(lo) + mean(zthorpe) - std(zthorpe), ...
              'r', 'linewidth', 2);
 
         if isfield(chi, 'dTdz')

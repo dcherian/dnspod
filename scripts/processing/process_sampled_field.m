@@ -59,6 +59,23 @@ function [sample, wda] = process_sampled_field(savedir, dt)
 
     wda = process_wda_estimate(chi, chi_wda);
     wda.Tzi = chi_wda.Tzi;
+
+    wda.zsort = chi_wda.zsort;
+    wda.Tbins = chi_wda.Tbins;
+
+    wda.zsort_full = chi_wda.zsort_full;
+    wda.binval = bpe.binval;
+
+    wda.zsort_true = nan(size(wda.zsort));
+    for tt = 1:size(wda.zsort, 2)
+        wda.zsort_true(:, tt) = interp1(wda.binval, ...
+                                        wda.zsort_full(:, tt), ...
+                                        wda.Tbins(:, tt));
+    end
+
+    wda.dz = chi_wda.dz(1:end-1, :); % estimated separation between isotherms
+    wda.dz_true = diff(wda.zsort_true, 1); % true separation between isotherms
+    wda.dz_rmse = sqrt(nansum((wda.dz_true - wda.dz).^2, 1)); % RMSE in dz estimate
 end
 
 % % choose buoyancy (isoscalar) surfaces

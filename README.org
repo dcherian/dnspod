@@ -20,22 +20,26 @@ xref: Kaminski & Smyth (2018), JFM
 5. images : ~dnspod/images/~
 ** Code variables
 Useful output variables / terminology
-| ~layer~  | Shear layer parameters (dimensional)                           |
-| ~samp~   | Non-dimensionalized sampling parameters                        |
-|          | ~pump_z~ : pumping amplitude                                   |
-|          | ~pump_period~ : pumping period                                 |
-|          | ~uback~ : constant background flow                             |
-| ~traj~   | Trajectory in non-dimensional space                            |
-|          | used to sample ~griddedInterpolant~ output                     |
-| ~sample~ | Sampled field                                                  |
-| ~wda~    | Structure with inferred turbulent parameters.                  |
-|          | ~Tbins~ : bin edges (bins, time)                               |
-|          | ~Tcen~ : center of bins                                        |
-|          | ~Jq, Kt, eps, chi~ : turbulent parameters (time)               |
-|          | ~T_Jq~ : ~mean(Tcen * Jq)~ : ~J_q~ weighted mean temp.         |
-|          | ~Jmat~ : 2D Jq matrix (Tcen, time)                             |
-|          | ~tmat~ : time matrix to go with ~Jmat~ (Tcen, time)            |
-|          | ~no_min_dz~ : 1 if there was not enough pumping, else 0 (time) |
+| ~layer~  | Shear layer parameters (dimensional)                                  |
+| ~samp~   | Non-dimensionalized sampling parameters                               |
+|          | ~pump_z~ : pumping amplitude                                          |
+|          | ~pump_period~ : pumping period                                        |
+|          | ~uback~ : constant background flow                                    |
+| ~traj~   | Trajectory in non-dimensional space                                   |
+|          | used to sample ~griddedInterpolant~ output                            |
+| ~sample~ | Fields sampled along trajectory ~traj~                                |
+| ~wda~    | Structure with inferred turbulent parameters.                         |
+|          | ~Tbins~ : bin edges (nbins, time)                                     |
+|          | ~Tcen~ : center of bins (nbins-1, time)                               |
+|          | ~Jq, Kt, eps, chi~ : turbulent parameters (time)                      |
+|          | ~T_Jq~ : ~mean(Tcen * Jq)~ : ~J_q~ weighted mean temp.                |
+|          | ~Jmat~ : 2D Jq matrix (Tcen, time)                                    |
+|          | ~tmat~ : time matrix to go with ~Jmat~ (Tcen, time)                   |
+|          | ~no_min_dz~ : 1 if there was not enough pumping, else 0 (time)        |
+|          | ~zsort~ : Sorted z-heights for bin edges, starting at 0 (Tbins, time) |
+|          | ~dz~ : estimate separation between isotherms Tbins (Tcen, time)       |
+|          | ~dz_true~ : true separation between isotherms Tbins (Tcen, time)      |
+|          | ~dz_rmse~ : ~sqrt(nanmean((dz_true-dz).^2))~ RMSE in estimated dz     |
 ** Code organization
 *** General
 | ~master~                | Example of processing simulation output                  |

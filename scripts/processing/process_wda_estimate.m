@@ -128,8 +128,11 @@ function [wda] = process_wda_estimate(chi, chi_wda)
 
     wda.time = (chi_wda.tstart + chi_wda.tstop)/2;
     if ~chi_is_empty
-        disp(['WDA: ' num2str(nnan) ' = ' num2str(nnan/length(wda.chi)*100) '% time intervals have chi=NaN. '])
-        disp(['WDA: ' num2str(sum(wda.no_min_dz)) ' = ' num2str(sum(wda.no_min_dz)/length(wda.chi)*100) ...
+        disp(['WDA: ' num2str(nnan) ' = ' ...
+              num2str(nnan/length(wda.chi)*100) ...
+              '% time intervals have chi=NaN. '])
+        disp(['WDA: ' num2str(sum(wda.no_min_dz)) ' = ' ...
+              num2str(sum(wda.no_min_dz)/length(wda.chi)*100) ...
               '% time intervals did not see enough pumping to make an estimate. ']);
 
     if isfield(chi, 'N2')
@@ -143,7 +146,4 @@ function [wda] = process_wda_estimate(chi, chi_wda)
                     chi.T(~isnan(chi.time)), ...
                     wda.time);
     wda.tmat = repmat(wda.time, [size(wda.Tcen, 1), 1]);
-
-    wda.zsort = chi_wda.zsort;
-    wda.Tbins = chi_wda.Tbins;
 end

@@ -190,7 +190,19 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag, bpe
     wda.Tbins(1:length(Tbins), 1) = Tbins;
     wda.dTdz_bins(1:length(Tbins)-1, 1) = 1./dzdT;
     wda.dz(1:length(Tbins)-1, 1) = dz;
-    wda.zsort = [0; cumsum(wda.dz(1:end-1))];
+
+    % reconstructing sorted profile is not really a good idea.
+    % because of NaNs in the middle, better to compare dz
+    dz(isnan(dz)) = 0;
+    zprof = [0, cumsum(dz)];
+    wda.zsort = zprof';
+
+    % save "true" sorted profile
+    lo = find_approx(bpe.binval, Tbins(1));
+    hi = find_approx(bpe.binval, Tbins(end));
+    zsorted = mean(bpe.Z(:, chit0:chit1), 2);
+    wda.binval = bpe.binval;
+    wda.zsort_full = zsorted;
 
     % fit T against z to get dT/dz == internal gradient
     [poly, ~, mu] = polyfit(zfull(~isnan(Tfull)), Tfull(~isnan(Tfull)), 1);
@@ -223,15 +235,11 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag, bpe
                           'r-', 'linewidth', 2, 'DisplayName', ['W&DA']);
         end
 
-        dz(isnan(dz)) = 0;
-        zprof = mean(zthorpe) - std(zthorpe) + [0, cumsum(dz)];
-        hline4 = plot(hsort, Tbins, zprof, 'k-', 'linewidth', 2, ...
+        hline4 = plot(hsort, Tbins, mean(zthorpe) - std(zthorpe) + zprof, ...
+                      'k-', 'linewidth', 2, ...
                       'displayname', ['average \Delta z mean=' ...
                             num2str(nanmean(1./dzdT), '%.1e')]);
 
-        lo = find_approx(bpe.binval, Tbins(1));
-        hi = find_approx(bpe.binval, Tbins(end));
-        zsorted = mean(bpe.Z(lo:hi, chit0:chit1), 2);
         plot(hsort, bpe.binval(lo:hi), zsorted-zsorted(1) + min(zprof), ...
              'r', 'linewidth', 2);
 

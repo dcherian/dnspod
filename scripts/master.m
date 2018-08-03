@@ -24,6 +24,22 @@ samp.pump_z = 0.75/(layer.width/2); % (m) pumping *vertical amplitude*
 samp.pump_period = 10/layer.timescale; % (s) pumping frequency
 samp.uback = 0.25/(layer.vjmp/2); % (m/s) background flow that advects
                                   % the shear layer past the chipod
+samp
 
-% actually process
+%% actually process
 process_output(simdir, layer, samp);
+
+%% once processed, do sorted KT, Jq estimate
+[sample, wda] = process_sampled_field(simdir, samp.name, 90)
+
+%% try a buoyancy budget for an isosurface
+
+if ~exist('bpe', 'var'), load([simdir '/bpe.mat']); end
+iso = nanmean(wda.T_Jq);
+plot_buoyancy_budget(sample, wda, bpe, iso)
+
+%% error in estimating separation between isotherms
+figure;
+plot(wda.time, wda.dz_rmse);
+ylabel('RMSE \Delta z')
+xlabel('time')

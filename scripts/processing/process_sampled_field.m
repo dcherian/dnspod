@@ -1,20 +1,21 @@
-% [sample, wda] = process_sampled_field(savedir, dt)
+% [sample, wda] = process_sampled_field(simdir, sampname, dt)
 % Input
 % -----
-%     savedir: directory with sample.mat
-%     dt : chunk length (wda.dt)
+%     simdir: directory with DNS output
+%     sampname : name of sampling run
+%     dt : chunk length (wda.dt) over which to average
 %
 % Output
 % ------
 %     sample : the 'sample' structure
 %     wda : structure with inferred chi, KT etc.
 
-function [sample, wda] = process_sampled_field(savedir, dt)
+function [sample, wda] = process_sampled_field(simdir, sampname, dt, debug)
 
-    % dt = 60; % (s) length of time chunk over which to average
+    if ~exist('debug', 'var'), debug = 0; end
 
-    load([savedir '/merged.mat'])
-    load([savedir '/../../bpe.mat'])
+    load([simdir '/samples/' sampname  '/merged.mat'])
+    load([simdir '/bpe.mat'])
 
     % decimate χ, eps to "1 second".
     % TODO: I am averaging here; should I sample?
@@ -49,7 +50,7 @@ function [sample, wda] = process_sampled_field(savedir, dt)
     avgs = {};
     for t0=1:ndt:length(sample.t)
         avgs{idx} = winters_dasaro_avg(t0, min(t0+ndt, length(sample.t)), ...
-                                       vdisp, chi, T, Tp, dt, plotflag, bpe);
+                                       vdisp, chi, T, Tp, dt, plotflag, bpe, debug);
 
         idx = idx+1;
     end
@@ -76,6 +77,8 @@ function [sample, wda] = process_sampled_field(savedir, dt)
     wda.dz = chi_wda.dz(1:end-1, :); % estimated separation between isotherms
     wda.dz_true = diff(wda.zsort_true, 1); % true separation between isotherms
     wda.dz_rmse = sqrt(nansum((wda.dz_true - wda.dz).^2, 1)); % RMSE in dz estimate
+
+    wda.name = sampname;
 end
 
 % % choose buoyancy (isoscalar) surfaces

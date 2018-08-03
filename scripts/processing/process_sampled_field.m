@@ -14,6 +14,7 @@ function [sample, wda] = process_sampled_field(savedir, dt)
     % dt = 60; % (s) length of time chunk over which to average
 
     load([savedir '/merged.mat'])
+    load([savedir '/../../bpe.mat'])
 
     % decimate χ, eps to "1 second".
     % TODO: I am averaging here; should I sample?
@@ -48,7 +49,7 @@ function [sample, wda] = process_sampled_field(savedir, dt)
     avgs = {};
     for t0=1:ndt:length(sample.t)
         avgs{idx} = winters_dasaro_avg(t0, min(t0+ndt, length(sample.t)), ...
-                                       vdisp, chi, T, Tp, dt, plotflag);
+                                       vdisp, chi, T, Tp, dt, plotflag, bpe);
 
         idx = idx+1;
     end

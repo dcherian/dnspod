@@ -102,7 +102,7 @@ function [wda] = process_wda_estimate(chi, chi_wda)
 
             if ~chi_is_empty
                 avg = isoscalar_average([chi.chi(chit0:chit1); ...
-                                    chi.eps(chit0:chit1)], ...
+                                         chi.eps(chit0:chit1)], ...
                                         Tchi, Tbins);
                 chiavg = avg(1, :);
                 epsavg = avg(2, :);
@@ -143,4 +143,7 @@ function [wda] = process_wda_estimate(chi, chi_wda)
                     chi.T(~isnan(chi.time)), ...
                     wda.time);
     wda.tmat = repmat(wda.time, [size(wda.Tcen, 1), 1]);
+
+    wda.zsort = chi_wda.zsort;
+    wda.Tbins = chi_wda.Tbins;
 end

@@ -10,11 +10,12 @@
 %           tstart, tstop - start,end of time chunk
 %
 
-function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
+function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag, bpe)
 
     optional = 0;
 
-    plotflag = 0;
+    debug = 0; % if 1, makes plots and stops after making inference for this chunk
+    plotflag = debug;
 
     MIN_DIS_Z = 0.05; % minimum length (in metres) of a single up- or down-cast
     nquantiles = round(10/60 * dt); % effectively number of bins
@@ -100,10 +101,12 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
         hdisp = subplot(3,4,[2, 3]); hold on; xlabel('time'); ylabel('Displacement')
         hdisp.Color = 'none';
         if ~chi_is_empty
-            hchi = subplot(3,4,[6,7]); hold on; xlabel('time'); ylabel(['\chi (1 sec, color)'])
+            hchi = subplot(3,4,[6,7]); hold on;
+            xlabel('time'); ylabel(['\chi (1 sec, color)'])
         end
         htemp2 = axes('Position', hdisp.Position, 'Color', 'none'); hold on;
-        htp = subplot(3,4,[10, 11]); hold on; xlabel(['time ' datestr(chi.time(chit0))]); ylabel(['Tp'])
+        htp = subplot(3,4,[10, 11]); hold on;
+        xlabel(['time ' datestr(chi.time(chit0))]); ylabel(['Tp'])
 
         yloc = NaN;
     end
@@ -181,12 +184,13 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
     dz = nanmean(dzmat, 2)';
     numgood = sum(~isnan(dzmat), 2);
     % make sure the isotherm is present in at least three profiles
-    % dz(numgood < 3) = NaN;
+    dz(numgood < 3) = NaN;
     dzdT = dz./dT;
 
     wda.Tbins(1:length(Tbins), 1) = Tbins;
     wda.dTdz_bins(1:length(Tbins)-1, 1) = 1./dzdT;
     wda.dz(1:length(Tbins)-1, 1) = dz;
+    wda.zsort = [0; cumsum(wda.dz(1:end-1))];
 
     % fit T against z to get dT/dz == internal gradient
     [poly, ~, mu] = polyfit(zfull(~isnan(Tfull)), Tfull(~isnan(Tfull)), 1);
@@ -220,13 +224,20 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
         end
 
         dz(isnan(dz)) = 0;
-        zprof = [mean(zthorpe)-std(zthorpe), mean(zthorpe)-std(zthorpe) + cumsum(dz)];
+        zprof = mean(zthorpe) - std(zthorpe) + [0, cumsum(dz)];
         hline4 = plot(hsort, Tbins, zprof, 'k-', 'linewidth', 2, ...
                       'displayname', ['average \Delta z mean=' ...
                             num2str(nanmean(1./dzdT), '%.1e')]);
 
+        lo = find_approx(bpe.binval, Tbins(1));
+        hi = find_approx(bpe.binval, Tbins(end));
+        zsorted = mean(bpe.Z(lo:hi, chit0:chit1), 2);
+        plot(hsort, bpe.binval(lo:hi), zsorted-zsorted(1) + min(zprof), ...
+             'r', 'linewidth', 2);
+
         if isfield(chi, 'dTdz')
-            hline5 = plot(hsort, Tbins(1) + [0, diff(hsort.YLim) * mean(chi.dTdz(chit0:chit1))], ...
+            hline5 = plot(hsort, Tbins(1) + ...
+                          [0, diff(hsort.YLim) * mean(chi.dTdz(chit0:chit1))], ...
                           hsort.YLim, 'r-', 'linewidth' ,2, 'DisplayName', ...
                           ['mean(chi.dTdz) = ' num2str(mean(chi.dTdz(chit0:chit1)), '%.1e')]);
         end
@@ -255,8 +266,8 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
 
         tpt0 = find_approx(Tp.time, vdisp.time(t0));
         tpt1 = find_approx(Tp.time, vdisp.time(t1));
-        htpfull = semilogy(htp, Tp.time(tpt0:tpt1), Tp.tp(tpt0:tpt1), 'color', ...
-                           [1 1 1]*0.6);
+        htpfull = semilogy(htp, Tp.time(tpt0:tpt1), Tp.tp(tpt0:tpt1), ...
+                           'color', [1 1 1]*0.6);
         ylim(htp, robust_lim(Tp.tp(tpt0:tpt1)))
         uistack(htpfull, 'bottom')
 
@@ -274,14 +285,16 @@ function [wda] = winters_dasaro_avg(t0, t1, vdisp, chi, T, Tp, dt, plotflag)
         htemp2.XTickLabels = [];
         htemp2.XTick = hdisp.XTick;
 
-        hsort.PlotBoxAspectRatio = [1 2 1];
-        htemp.PlotBoxAspectRatio = [1 2 1];
+        hsort.PlotBoxAspectRatio = [1 2.5 1];
+        htemp.PlotBoxAspectRatio = [1 2.5 1];
         hsort.XLim = [min(T.Tenh(t0:t1))-1e-3 max(T.Tenh(t0:t1))+1e-3];
 
         % hsort.Title.String = ['Jq_{DA} = ' num2str(Jqda, '%.1f') ...
         %                     ' | Jq_{i} = ' num2str(Jqi, '%.1f') ...
         %                     ' | Jq_{m} = ' num2str(Jqm, '%.1f')];
     end
+
+    if debug, keyboard; end
 end
 
 function [data] = jitter(data, magnitude)

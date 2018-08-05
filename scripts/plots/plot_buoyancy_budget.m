@@ -6,12 +6,15 @@ function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
     [totalb, totalbslice, b0z0] = ...
         calc_buoyancy_budget(sample, wda, bpe, iso);
 
-    sim_info = sample.sim_info;
+    RePr = sample.sim_info.Re * sample.sim_info.Pr;
 
     hfig = figure;
-    ax = packfig(3, 1)
-    plot(ax(1), sample.t, sample.b)
+    ax = packfig(3, 1);
     hold(ax(1), 'on')
+    hold(ax(2), 'on')
+    hold(ax(3), 'on')
+
+    plot(ax(1), sample.t, sample.b)
     hl = plot(ax(1), wda.time, wda.T, 'linewidth', 2);
     hl2 = plot(ax(1), wda.time, wda.T_Jq, 'k', 'linewidth', 2)
     plot(ax(1), [sample.t(1), sample.t(end)], [1, 1]*iso, ...
@@ -27,26 +30,20 @@ function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
     hl1.Interpreter = 'latex';
 
     totalbi = interp1(sample.t, totalb, wda.time);
-    plot(ax(2), wda.time, 1/sample.sim_info.Re/sample.sim_info.Pr * wda.Jq)
-    hold(ax(2), 'on')
-    plot(ax(2), wda.time, 1/sample.sim_info.Re/sample.sim_info.Pr * ...
-         repnan(interpolate_Jq_to_iso(wda, iso), 0))
-    plot(ax(2), avg1(sample.t), diff(totalb)./diff(sample.t))
-    hl2 = legend(ax(2), 'mean $$1/RePr J_q^t$$', ...
-                 'interp $$1/RePr J_q^t$$', ...
-                 '$$db/dt$$', 'location', 'southeast')
+    plot_flux(ax, RePr, wda.time, wda.Jq, 'mean')
+    plot_flux(ax, RePr, wda.time, interpolate_Jq_to_iso(wda, iso), 'interp')
+    plot(ax(2), avg1(sample.t), diff(totalb)./diff(sample.t), ...
+         'displayname', '$$db/dt$$')
+    hl2 = legend(ax(2), '-dynamiclegend', 'location', 'southeast')
     hl2.Interpreter = 'latex';
     ax(2).YLabel.Interpreter = 'latex';
 
-    hold(ax(3), 'on')
     plot(ax(3), bpe.time, totalb - totalb(1), 'displayname', 'mean b (full)')
     plot(ax(3), bpe.time, totalb - totalb(1) + (b0z0 - b0z0(1)), ...
          'displayname', 'mean b (full) + $b_0 \; z_0$')
-    plot(ax(3), bpe.time, totalbslice - totalbslice(1), 'displayname', 'mean b (slice)')
-    plot(ax(3), wda.time, ...
-         1/sim_info.Pr/sim_info.Re .* cumtrapz(wda.time, repnan(wda.Jq, 0)), ...
-         'displayname', '$$\frac{1}{Re Pr} \int J_q^t \; dt$$')
-    hl3 = legend(ax(3), '-dynamiclegend');
+    plot(ax(3), bpe.time, totalbslice - totalbslice(1), ...
+         'displayname', 'mean b (slice)')
+    hl3 = legend(ax(3), '-dynamiclegend', 'location', 'southwest');
     hl3.Interpreter = 'latex';
     xlabel(ax(3), 'time')
 
@@ -66,3 +63,15 @@ function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
     hl.LineWidth = 2;
     resizeImageForPub('portrait')
     hfig.Position = [680 230 720 748];
+
+end
+
+function [] = plot_flux(ax, RePr, time, Jq, name)
+
+    Jq = repnan(Jq, 0);
+    name = ['$$1/RePr J_q^t$$: ' name];
+    hl = plot(ax(2), time, 1/RePr * Jq, 'displayname', name)
+    plot(ax(3), time, 1/RePr * cumtrapz(time, Jq), ...
+         'displayname', ['$$\int$$' name], 'color', hl.Color)
+
+end

@@ -43,3 +43,43 @@ figure;
 plot(wda.time, wda.dz_rmse);
 ylabel('RMSE \Delta z')
 xlabel('time')
+
+%% Jq as function of time, isosurface
+
+RePr = sample.sim_info.Re * sample.sim_info.Pr;
+sizevec = abs(wda.Jmat(:))/nanmax(abs(wda.Jmat(:)))*12 + 10;
+
+figure;
+ax(1) = subplot(211); hold on;
+hdots = scatter(wda.tmat(:), wda.Tcen(:), sizevec.^2, wda.Jmat(:), 'filled');
+hdots.MarkerEdgeColor = [1,1,1]*0;
+hdots.MarkerEdgeAlpha = 0.5;
+hdots.MarkerFaceAlpha = 0.9;
+% colormap(flip(cbrewer('seq', 'Blues', 32)))
+colormap(flip(lbmap))
+caxis([prctile(wda.Jmat(:), 2), prctile(wda.Jmat(:), 98)]);
+colorbar('southoutside')
+title([wda.name ' | $$J_q^t$$'], 'interpreter', 'latex')
+hold on
+xlabel('time')
+ylabel('buoyancy')
+hl(1) = plot(xlim, nanmean(wda.T_Jq)*[1,1], 'k');
+hl(2) = plot(xlim, nanmean(sample.b)*[1,1], 'k--');
+legend(hl, 'J_q weighted T', 'mean sampled buoyancy')
+% beautify([10 11 12]+2, 'Times')
+
+% subsample Jmat at iso-surface level
+mask = ~isnan(wda.Tcen(:));
+J = scatteredInterpolant([wda.tmat(mask), wda.Tcen(mask)], wda.Jmat(mask));
+[~, imax] = max(sum(~isnan(wda.Jmat), 2));
+
+ax(2) = subplot(212);
+hold on;
+plot(wda.time, wda.Jq)
+for iso = [nanmean(wda.T_Jq), nanmean(sample.b)]
+    plot(wda.time, repnan(interpolate_Jq_to_iso(wda, iso), 0), 'k')
+end
+legend(ax(2), 'depth-averaged J_q', 'J_q(J_q weighted b)', 'J_q(mean sample.b)', ...
+       'location', 'southeast')
+ylabel('$$J_q^t$$', 'interpreter', 'latex')
+linkaxes(ax, 'x')

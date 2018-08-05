@@ -12,7 +12,7 @@ function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
     ax = packfig(3, 1)
     plot(ax(1), sample.t, sample.b)
     hold(ax(1), 'on')
-    hl = plot(ax(1), wda.time, wda.T, 'linewidth', 2)
+    hl = plot(ax(1), wda.time, wda.T, 'linewidth', 2);
     hl2 = plot(ax(1), wda.time, wda.T_Jq, 'k', 'linewidth', 2)
     plot(ax(1), [sample.t(1), sample.t(end)], [1, 1]*iso, ...
          '-', 'color', [1, 1, 1]*0.5)
@@ -20,14 +20,22 @@ function [] = plot_buoyancy_budget(sample, wda, bpe, iso)
                  'mean buoyancy per profile', ...
                  '$J_q^t$ weighted temperature', ...
                  '$b_0$ surface', 'location', 'southeast');
-    title(ax(1), ['mean buoyancy budget for isosurface $b_0$ = ' ...
+    title(ax(1), [wda.name ' | mean buoyancy budget for isosurface $b_0$ = ' ...
                   num2str(iso, '%.3f')])
     ylabel(ax(1), 'buoyancy')
     ax(1).Title.Interpreter = 'latex';
     hl1.Interpreter = 'latex';
 
-    plot(ax(2), wda.time, wda.Jq)
-    ylabel(ax(2), '$$J_q^t$$')
+    totalbi = interp1(sample.t, totalb, wda.time);
+    plot(ax(2), wda.time, 1/sample.sim_info.Re/sample.sim_info.Pr * wda.Jq)
+    hold(ax(2), 'on')
+    plot(ax(2), wda.time, 1/sample.sim_info.Re/sample.sim_info.Pr * ...
+         repnan(interpolate_Jq_to_iso(wda, iso), 0))
+    plot(ax(2), avg1(sample.t), diff(totalb)./diff(sample.t))
+    hl2 = legend(ax(2), 'mean $$1/RePr J_q^t$$', ...
+                 'interp $$1/RePr J_q^t$$', ...
+                 '$$db/dt$$', 'location', 'southeast')
+    hl2.Interpreter = 'latex';
     ax(2).YLabel.Interpreter = 'latex';
 
     hold(ax(3), 'on')

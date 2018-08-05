@@ -1,12 +1,20 @@
-function [] = plot_jq(savedir, dt)
+function [] = plot_jq(ax, wda)
 
-    [sample, wda] = process_sampled_field(savedir, dt);
+    sizevec = abs(wda.Jmat(:))/nanmax(abs(wda.Jmat(:)))*12 + 10;
 
-    figure;
-    pcolorcen(wda.tmat, wda.Tcen, wda.Jmat)
-    caxis([prctile(wda.Jmat(:), 2), ...
-           prctile(wda.Jmat(:), 98)])
-    colormap(bone)
-    liney(nanmean(-wda.T_Jq))
-    title(num2str([dt nanmean(-wda.T_Jq)]))
+    hdots = scatter(ax, wda.tmat(:), wda.Tcen(:), ...
+                    sizevec.^2, wda.Jmat(:), 'filled');
+    hdots.MarkerEdgeColor = [1,1,1]*0;
+    hdots.MarkerEdgeAlpha = 0.5;
+    hdots.MarkerFaceAlpha = 0.9;
+
+    % colormap(flip(cbrewer('seq', 'Blues', 32)))
+    colormap(flip(lbmap))
+    caxis([prctile(wda.Jmat(:), 2), prctile(wda.Jmat(:), 98)]);
+    colorbar('southoutside')
+
+    title(ax, [wda.name ' | $$J_q^t$$'], 'interpreter', 'latex')
+    hold on
+    xlabel(ax, 'time')
+    ylabel(ax, 'buoyancy')
 end

@@ -4,6 +4,6 @@ function [Jq] = interpolate_Jq_to_iso(wda, iso)
 
    for tt = 1:size(wda.Jmat, 2)
        if all(isnan(wda.Tcen(:, tt))), continue; end
-       Jq(:, tt) = interp1(wda.Tcen(:, tt), wda.Jmat(:, tt), iso, 'nearest');
+       Jq(:, tt) = interp1(wda.Tcen(:, tt), wda.Jmat(:, tt), iso, 'linear');
    end
 end

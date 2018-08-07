@@ -35,8 +35,13 @@ process_output(simdir, layer, samp);
 %% try a buoyancy budget for an isosurface
 
 if ~exist('bpe', 'var'), load([simdir '/bpe.mat']); end
-iso = nanmean(wda.T_Jq);
-plot_buoyancy_budget(sample, wda, bpe, iso)
+
+trange = get_turb_time_range(sample);
+t0 = find_approx(wda.time, sample.t(trange(1)));
+isos = [get_buoy_range(sample.b(trange)), ...
+        nanmean(wda.T_Jq(t0:end))];
+
+plot_buoyancy_budget(sample, pod1, bpe, isos)
 
 %% error in estimating separation between isotherms
 figure;

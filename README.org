@@ -72,9 +72,14 @@ This is more complicated/modular than it needs to be because I copied stuff over
 *** Analysis
 | ~calc_buoyancy_budget~              | Estimate terms in buoyancy budget.             |
 | ~calculate_buoyancy_between_bounds~ | Estimate mean buoyancy between two isosurfaces |
+| ~get_buoy_range~                    | Returns a range of isosurfaces between which   |
+|                                     | we might expect to get good agreement          |
+| ~get_turb_time_range~               | Given ~sample~, returns a time range that is   |
+|                                     | mostly "pure turbulence". Currently hardcoded. |
 | ~test_internal_wave_pumping~        | Attempt to account for internal wave           |
-|                                   | contamination. Abandoned.                      |
+|                                     | contamination. Abandoned.                      |
 *** Plotting
 | ~plot_buoyancy_budget~ | Plot terms in buoyancy budget.                |
 | ~plot_estimate~        | Given ~wda~ or ~sample~  structure, make plot |
 |                        | of all quantities.                            |
+| ~plot_jq~              | 2D scatter plot of ~wda.Jmat~                 |
